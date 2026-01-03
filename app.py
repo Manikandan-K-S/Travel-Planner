@@ -142,7 +142,9 @@ def dashboard():
     
     user = User.query.get(session['user_id'])
     trips = Trip.query.filter_by(user_id=session['user_id']).order_by(Trip.created_at.desc()).all()
-    return render_template('dashboard.html', user=user, trips=trips)
+    # Convert to dicts for JSON serialization in template
+    trips_data = [t.to_dict() for t in trips]
+    return render_template('dashboard.html', user=user, trips=trips_data)
 
 
 # Trip Routes
@@ -481,7 +483,7 @@ def analytics():
         'monthly_trips': monthly_trips
     }
     
-    return render_template('analytics.html', user=user, analytics=analytics_data, trips=trips)
+    return render_template('analytics.html', user=user, analytics=analytics_data, trips=[t.to_dict() for t in trips])
 
 
 # API for analytics data

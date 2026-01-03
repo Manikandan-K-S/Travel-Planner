@@ -10,7 +10,8 @@
             <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
                 <a href="{{ url_for('my_trips') }}" class="hover:text-secondary">My Trips</a>
                 <i class="fas fa-chevron-right text-xs"></i>
-                <a href="{{ url_for('view_trip', trip_id=trip.trip_id) }}" class="hover:text-secondary">{{ trip.trip_name }}</a>
+                <a href="{{ url_for('view_trip', trip_id=trip.trip_id) }}" class="hover:text-secondary">{{
+                    trip.trip_name }}</a>
                 <i class="fas fa-chevron-right text-xs"></i>
                 <span class="text-secondary">Budget</span>
             </div>
@@ -26,9 +27,9 @@
             </button>
         </div>
     </div>
-    
+
     {% set itinerary = trip.get_itinerary() %}
-    
+
     <!-- Budget Overview Cards -->
     <div class="grid md:grid-cols-4 gap-6 mb-8">
         <div class="card-payanam p-6 gradient-primary text-white" data-aos="fade-up">
@@ -42,7 +43,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="card-payanam p-6" data-aos="fade-up" data-aos-delay="100">
             <div class="flex items-center gap-4">
                 <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center">
@@ -54,7 +55,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="card-payanam p-6" data-aos="fade-up" data-aos-delay="200">
             <div class="flex items-center gap-4">
                 <div class="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center">
@@ -66,7 +67,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="card-payanam p-6" data-aos="fade-up" data-aos-delay="300">
             <div class="flex items-center gap-4">
                 <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center">
@@ -79,7 +80,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="grid lg:grid-cols-2 gap-8">
         <!-- Budget Breakdown Chart -->
         <div class="card-payanam p-6" data-aos="fade-up">
@@ -92,7 +93,7 @@
             <div id="chartLegend" class="mt-6 grid grid-cols-2 gap-3">
             </div>
         </div>
-        
+
         <!-- Per City Breakdown -->
         <div class="card-payanam p-6" data-aos="fade-up" data-aos-delay="100">
             <h3 class="text-xl font-bold text-accent mb-6">
@@ -102,7 +103,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Daily Breakdown -->
     <div class="card-payanam p-6 mt-8" data-aos="fade-up">
         <h3 class="text-xl font-bold text-accent mb-6">
@@ -112,7 +113,7 @@
             <canvas id="dailyBudgetChart" height="100"></canvas>
         </div>
     </div>
-    
+
     <!-- Detailed Table -->
     <div class="card-payanam p-6 mt-8" data-aos="fade-up">
         <h3 class="text-xl font-bold text-accent mb-6">
@@ -140,8 +141,8 @@
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const itinerary = {{ trip.itinerary_json|safe }};
-    
+    const itinerary = {{ trip.itinerary_json| safe }};
+
     // Calculate budgets
     const categoryBudgets = {
         sightseeing: 0,
@@ -151,30 +152,30 @@
         relaxation: 0,
         travel: 0
     };
-    
+
     const cityBudgets = {};
     const dailyBudgets = [];
     let totalBudget = 0;
     let totalDays = 0;
     let tableRows = '';
-    
+
     (itinerary.stops || []).forEach(stop => {
         let cityTotal = 0;
-        
+
         (stop.days || []).forEach(day => {
             let dayTotal = 0;
-            
+
             (day.activities || []).forEach(activity => {
-                const cost = activity.estimated_cost || 0;
+                const cost = parseFloat(activity.estimated_cost) || 0;
                 totalBudget += cost;
                 cityTotal += cost;
                 dayTotal += cost;
-                
+
                 const cat = activity.category || 'other';
                 if (categoryBudgets.hasOwnProperty(cat)) {
                     categoryBudgets[cat] += cost;
                 }
-                
+
                 tableRows += `
                     <tr class="border-b border-gray-100 hover:bg-cream transition">
                         <td class="py-3 px-4">${stop.city_name}</td>
@@ -185,23 +186,27 @@
                     </tr>
                 `;
             });
-            
+
             dailyBudgets.push({
                 label: `${stop.city_name} - Day ${day.day_number}`,
                 value: dayTotal
             });
             totalDays++;
         });
-        
-        cityBudgets[stop.city_name] = cityTotal;
+
+        if (cityBudgets.hasOwnProperty(stop.city_name)) {
+            cityBudgets[stop.city_name] += cityTotal;
+        } else {
+            cityBudgets[stop.city_name] = cityTotal;
+        }
     });
-    
+
     // Update display
     document.getElementById('totalBudget').textContent = '₹' + totalBudget.toLocaleString('en-IN');
     document.getElementById('sightseeingBudget').textContent = '₹' + categoryBudgets.sightseeing.toLocaleString('en-IN');
     document.getElementById('foodBudget').textContent = '₹' + categoryBudgets.food.toLocaleString('en-IN');
     document.getElementById('avgPerDay').textContent = '₹' + (totalDays > 0 ? Math.round(totalBudget / totalDays).toLocaleString('en-IN') : 0);
-    
+
     // City budgets display
     const maxCityBudget = Math.max(...Object.values(cityBudgets), 1);
     document.getElementById('cityBudgets').innerHTML = Object.entries(cityBudgets).map(([city, budget]) => `
@@ -213,16 +218,16 @@
             <div class="w-24 text-right font-bold text-secondary">₹${budget.toLocaleString('en-IN')}</div>
         </div>
     `).join('');
-    
+
     // Expenses table
     document.getElementById('expensesTable').innerHTML = tableRows || `
         <tr><td colspan="5" class="py-8 text-center text-gray-400">No expenses recorded yet</td></tr>
     `;
-    
+
     // Pie Chart
     const pieColors = ['#EA7B7B', '#D25353', '#9E3B3B', '#FF9B9B', '#FFB4B4', '#FFC8C8'];
     const pieData = Object.entries(categoryBudgets).filter(([_, v]) => v > 0);
-    
+
     new Chart(document.getElementById('budgetPieChart'), {
         type: 'doughnut',
         data: {
@@ -241,7 +246,7 @@
             }
         }
     });
-    
+
     // Chart legend
     document.getElementById('chartLegend').innerHTML = pieData.map(([cat, value], i) => `
         <div class="flex items-center gap-2">
@@ -250,7 +255,7 @@
             <span class="ml-auto font-bold text-sm">₹${value.toLocaleString('en-IN')}</span>
         </div>
     `).join('');
-    
+
     // Daily Budget Bar Chart
     new Chart(document.getElementById('dailyBudgetChart'), {
         type: 'bar',
@@ -272,7 +277,7 @@
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        callback: function(value) {
+                        callback: function (value) {
                             return '₹' + value.toLocaleString('en-IN');
                         }
                     }
@@ -280,7 +285,7 @@
             }
         }
     });
-    
+
     function exportBudget() {
         let csv = 'City,Day,Activity,Category,Amount\n';
         (itinerary.stops || []).forEach(stop => {
@@ -290,7 +295,7 @@
                 });
             });
         });
-        
+
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
