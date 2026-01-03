@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Payanam{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Welcome Section -->
+    <div class="gradient-cream rounded-3xl p-8 mb-8" data-aos="fade-up">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+                <h1 class="text-3xl lg:text-4xl font-bold font-playfair text-accent mb-4">
+                    வணக்கம், {{ user.name }}! 👋
+                </h1>
+                <p class="text-gray-600 text-lg mb-6">
+                    Ready to plan your next Indian adventure? Explore cities, create itineraries, and make memories!
+                </p>
+                <a href="{{ url_for('create_trip') }}" class="btn-payanam inline-flex items-center gap-2 no-underline">
+                    <i class="fas fa-plus"></i>
+                    Plan New Trip
+                </a>
+            </div>
+            <div class="hidden md:flex justify-end">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400" alt="Travel" class="rounded-2xl shadow-xl w-80">
+                    <div class="absolute -bottom-4 -left-4 bg-white p-4 rounded-xl shadow-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 gradient-primary rounded-full flex items-center justify-center">
+                                <i class="fas fa-suitcase text-white"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500">Total Trips</div>
+                                <div class="text-xl font-bold text-accent">{{ trips|length }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Stats -->
+    <div class="grid md:grid-cols-4 gap-6 mb-8">
+        <div class="card-payanam p-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 gradient-primary rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-plane text-white text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-accent">{{ trips|length }}</div>
+                    <div class="text-gray-500 text-sm">Total Trips</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-payanam p-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-map-marker-alt text-green-600 text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-accent" id="totalCities">0</div>
+                    <div class="text-gray-500 text-sm">Cities Visited</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-payanam p-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-rupee-sign text-blue-600 text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-accent" id="totalBudget">₹0</div>
+                    <div class="text-gray-500 text-sm">Total Budget</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-payanam p-6" data-aos="fade-up" data-aos-delay="400">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-calendar-check text-purple-600 text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-accent" id="upcomingTrips">0</div>
+                    <div class="text-gray-500 text-sm">Upcoming</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <a href="{{ url_for('create_trip') }}" class="card-payanam p-6 group hover:bg-primary/5 transition no-underline" data-aos="fade-up">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                    <i class="fas fa-plus text-white"></i>
+                </div>
+                <div>
+                    <div class="font-bold text-accent">Create New Trip</div>
+                    <div class="text-sm text-gray-500">Start planning your adventure</div>
+                </div>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('city_search') }}" class="card-payanam p-6 group hover:bg-primary/5 transition no-underline" data-aos="fade-up" data-aos-delay="100">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                    <i class="fas fa-search text-white"></i>
+                </div>
+                <div>
+                    <div class="font-bold text-accent">Explore Cities</div>
+                    <div class="text-sm text-gray-500">Discover Indian destinations</div>
+                </div>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('analytics') }}" class="card-payanam p-6 group hover:bg-primary/5 transition no-underline" data-aos="fade-up" data-aos-delay="200">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                    <i class="fas fa-chart-bar text-white"></i>
+                </div>
+                <div>
+                    <div class="font-bold text-accent">View Analytics</div>
+                    <div class="text-sm text-gray-500">Track your travel patterns</div>
+                </div>
+            </div>
+        </a>
+    </div>
+    
+    <!-- Recent Trips -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold font-playfair text-accent">Recent Trips</h2>
+            <a href="{{ url_for('my_trips') }}" class="text-secondary font-medium hover:underline no-underline">
+                View All <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+        </div>
+        
+        {% if trips %}
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for trip in trips[:6] %}
+            <div class="card-payanam overflow-hidden group" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <div class="relative h-48 overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20">
+                    {% if trip.cover_image %}
+                    <img src="{{ trip.cover_image }}" alt="{{ trip.trip_name }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center">
+                        <i class="fas fa-image text-6xl text-primary/30"></i>
+                    </div>
+                    {% endif %}
+                    <div class="absolute top-4 left-4 badge-payanam capitalize">
+                        {{ trip.trip_category }}
+                    </div>
+                    <div class="absolute top-4 right-4">
+                        {% if trip.is_public %}
+                        <span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs">
+                            <i class="fas fa-globe mr-1"></i>Public
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-lg font-bold text-accent mb-2 truncate">{{ trip.trip_name }}</h3>
+                    <div class="flex items-center gap-2 text-gray-500 text-sm mb-4">
+                        <i class="fas fa-calendar"></i>
+                        <span>{{ trip.start_date }} - {{ trip.end_date }}</span>
+                    </div>
+                    {% if trip.total_budget > 0 %}
+                    <div class="flex items-center gap-2 text-gray-500 text-sm mb-4">
+                        <i class="fas fa-rupee-sign"></i>
+                        <span>₹{{ "%.2f"|format(trip.total_budget) }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="flex gap-2">
+                        <a href="{{ url_for('itinerary_builder', trip_id=trip.trip_id) }}" class="flex-1 btn-payanam text-center text-sm py-2 no-underline">
+                            <i class="fas fa-edit mr-1"></i>Edit
+                        </a>
+                        <a href="{{ url_for('view_trip', trip_id=trip.trip_id) }}" class="flex-1 btn-payanam-outline text-center text-sm py-2 no-underline">
+                            <i class="fas fa-eye mr-1"></i>View
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="card-payanam p-12 text-center" data-aos="fade-up">
+            <div class="w-20 h-20 gradient-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-suitcase-rolling text-white text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-accent mb-2">No trips yet!</h3>
+            <p class="text-gray-600 mb-6">Start planning your first Indian adventure today.</p>
+            <a href="{{ url_for('create_trip') }}" class="btn-payanam inline-flex items-center gap-2 no-underline">
+                <i class="fas fa-plus"></i>
+                Create Your First Trip
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Popular Destinations -->
+    <div>
+        <h2 class="text-2xl font-bold font-playfair text-accent mb-6">Popular Destinations</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div class="card-payanam p-4 text-center group cursor-pointer hover:bg-primary/5" data-aos="zoom-in">
+                <div class="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3 border-2 border-primary group-hover:scale-110 transition">
+                    <img src="https://images.unsplash.com/photo-1599661046289-e31897846e41?w=100" alt="Jaipur" class="w-full h-full object-cover">
+                </div>
+                <div class="font-medium text-accent">Jaipur</div>
+                <div class="text-xs text-gray-500">Rajasthan</div>
+            </div>
+            
+            <div class="card-payanam p-4 text-center group cursor-pointer hover:bg-primary/5" data-aos="zoom-in" data-aos-delay="50">
+                <div class="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3 border-2 border-secondary group-hover:scale-110 transition">
+                    <img src="https://images.unsplash.com/photo-1590766940554-634931ab6293?w=100" alt="Madurai" class="w-full h-full object-cover">
+                </div>
+                <div class="font-medium text-accent">Madurai</div>
+                <div class="text-xs text-gray-500">Tamil Nadu</div>
+            </div>
+            
+            <div class="card-payanam p-4 text-center group cursor-pointer hover:bg-primary/5" data-aos="zoom-in" data-aos-delay="100">
+                <div class="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3 border-2 border-accent group-hover:scale-110 transition">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100" alt="Coimbatore" class="w-full h-full object-cover">
+                </div>
+                <div class="font-medium text-accent">Coimbatore</div>
+                <div class="text-xs text-gray-500">Tamil Nadu</div>
+            </div>
+            
+            <div class="card-payanam p-4 text-center group cursor-pointer hover:bg-primary/5" data-aos="zoom-in" data-aos-delay="150">
+                <div class="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3 border-2 border-primary group-hover:scale-110 transition">
+                    <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=100" alt="Kerala" class="w-full h-full object-cover">
+                </div>
+                <div class="font-medium text-accent">Alleppey</div>
+                <div class="text-xs text-gray-500">Kerala</div>
+            </div>
+            
+            <div class="card-payanam p-4 text-center group cursor-pointer hover:bg-primary/5" data-aos="zoom-in" data-aos-delay="200">
+                <div class="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3 border-2 border-secondary group-hover:scale-110 transition">
+                    <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=100" alt="Goa" class="w-full h-full object-cover">
+                </div>
+                <div class="font-medium text-accent">Goa</div>
+                <div class="text-xs text-gray-500">Goa</div>
+            </div>
+            
+            <div class="card-payanam p-4 text-center group cursor-pointer hover:bg-primary/5" data-aos="zoom-in" data-aos-delay="250">
+                <div class="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3 border-2 border-accent group-hover:scale-110 transition">
+                    <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=100" alt="Agra" class="w-full h-full object-cover">
+                </div>
+                <div class="font-medium text-accent">Agra</div>
+                <div class="text-xs text-gray-500">Uttar Pradesh</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Calculate stats from trips
+    document.addEventListener('DOMContentLoaded', function() {
+        const trips = {{ trips|tojson|safe if trips else '[]' }};
+        let totalCities = 0;
+        let totalBudget = 0;
+        let upcomingTrips = 0;
+        const today = new Date().toISOString().split('T')[0];
+        
+        trips.forEach(trip => {
+            totalBudget += trip.total_budget || 0;
+            
+            if (trip.start_date > today) {
+                upcomingTrips++;
+            }
+            
+            try {
+                const itinerary = JSON.parse(trip.itinerary_json || '{"stops": []}');
+                totalCities += (itinerary.stops || []).length;
+            } catch(e) {}
+        });
+        
+        document.getElementById('totalCities').textContent = totalCities;
+        document.getElementById('totalBudget').textContent = '₹' + totalBudget.toLocaleString('en-IN');
+        document.getElementById('upcomingTrips').textContent = upcomingTrips;
+    });
+</script>
+{% endblock %}

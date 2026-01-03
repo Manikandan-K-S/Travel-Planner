@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Trip - Payanam{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-3xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8" data-aos="fade-up">
+            <a href="{{ url_for('view_trip', trip_id=trip.trip_id) }}" class="text-primary hover:text-accent transition-colors mb-4 inline-flex items-center gap-2">
+                <i class="fas fa-arrow-left"></i>Back to Trip
+            </a>
+            <h1 class="text-3xl font-bold text-accent font-playfair">Edit Trip</h1>
+            <p class="text-gray-500 mt-2">Update your trip details</p>
+        </div>
+        
+        <!-- Edit Form -->
+        <form id="editTripForm" class="card-payanam p-8" data-aos="fade-up">
+            <!-- Trip Name -->
+            <div class="mb-6">
+                <label class="block font-medium text-accent mb-2">
+                    Trip Name <span class="text-red-500">*</span>
+                </label>
+                <input type="text" id="tripName" class="input-payanam w-full" 
+                       value="{{ trip.trip_name }}" required maxlength="100"
+                       placeholder="e.g., Kerala Backwaters Escape">
+                <p class="text-sm text-gray-500 mt-1">Give your trip a memorable name</p>
+            </div>
+            
+            <!-- Description -->
+            <div class="mb-6">
+                <label class="block font-medium text-accent mb-2">Description</label>
+                <textarea id="tripDescription" class="input-payanam w-full h-28 resize-none" 
+                          maxlength="500" placeholder="Describe your trip...">{{ trip.trip_description or '' }}</textarea>
+                <p class="text-sm text-gray-500 mt-1"><span id="descCount">{{ (trip.trip_description or '')|length }}</span>/500 characters</p>
+            </div>
+            
+            <!-- Dates -->
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block font-medium text-accent mb-2">
+                        Start Date <span class="text-red-500">*</span>
+                    </label>
+                    <input type="date" id="startDate" class="input-payanam w-full" 
+                           value="{{ trip.start_date }}" required>
+                </div>
+                <div>
+                    <label class="block font-medium text-accent mb-2">
+                        End Date <span class="text-red-500">*</span>
+                    </label>
+                    <input type="date" id="endDate" class="input-payanam w-full" 
+                           value="{{ trip.end_date }}" required>
+                </div>
+            </div>
+            
+            <!-- Category -->
+            <div class="mb-6">
+                <label class="block font-medium text-accent mb-3">Trip Category</label>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {% set categories = ['adventure', 'heritage', 'pilgrimage', 'beach', 'nature', 'city', 'honeymoon', 'family'] %}
+                    {% set category_icons = {
+                        'adventure': 'fa-hiking',
+                        'heritage': 'fa-landmark',
+                        'pilgrimage': 'fa-om',
+                        'beach': 'fa-umbrella-beach',
+                        'nature': 'fa-leaf',
+                        'city': 'fa-city',
+                        'honeymoon': 'fa-heart',
+                        'family': 'fa-users'
+                    } %}
+                    {% for cat in categories %}
+                    <label class="category-option cursor-pointer">
+                        <input type="radio" name="category" value="{{ cat }}" class="hidden peer" 
+                               {{ 'checked' if trip.trip_category == cat else '' }}>
+                        <div class="p-4 rounded-xl border-2 border-gray-200 text-center transition-all duration-300 peer-checked:border-primary peer-checked:bg-primary/10 hover:border-primary/50">
+                            <i class="fas {{ category_icons[cat] }} text-2xl text-primary mb-2"></i>
+                            <div class="font-medium capitalize text-sm">{{ cat }}</div>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Budget -->
+            <div class="mb-6">
+                <label class="block font-medium text-accent mb-2">Total Budget (₹)</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
+                    <input type="number" id="totalBudget" class="input-payanam w-full pl-8" 
+                           value="{{ trip.total_budget|int }}" min="0" step="1000"
+                           placeholder="50000">
+                </div>
+            </div>
+            
+            <!-- Cover Image -->
+            <div class="mb-6">
+                <label class="block font-medium text-accent mb-2">Cover Image URL</label>
+                <input type="url" id="coverImage" class="input-payanam w-full" 
+                       value="{{ trip.cover_image or '' }}"
+                       placeholder="https://example.com/image.jpg">
+                <p class="text-sm text-gray-500 mt-1">Enter a URL for the trip cover image</p>
+                
+                <div id="imagePreview" class="mt-4 {{ '' if trip.cover_image else 'hidden' }}">
+                    <img src="{{ trip.cover_image or '' }}" alt="Cover Preview" 
+                         class="w-full h-48 object-cover rounded-xl">
+                </div>
+            </div>
+            
+            <!-- Public Toggle -->
+            <div class="mb-8">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="isPublic" class="w-5 h-5 accent-primary" 
+                           {{ 'checked' if trip.is_public else '' }}>
+                    <span class="font-medium text-accent">Make this trip public</span>
+                </label>
+                <p class="text-sm text-gray-500 mt-1 ml-8">Public trips can be shared with others via link</p>
+            </div>
+            
+            <!-- Actions -->
+            <div class="flex flex-wrap gap-4">
+                <button type="submit" class="btn-payanam flex-1 md:flex-none">
+                    <i class="fas fa-save mr-2"></i>Save Changes
+                </button>
+                <a href="{{ url_for('view_trip', trip_id=trip.trip_id) }}" class="btn-payanam-outline flex-1 md:flex-none text-center no-underline">
+                    Cancel
+                </a>
+            </div>
+        </form>
+        
+        <!-- Danger Zone -->
+        <div class="card-payanam p-6 mt-8 border-2 border-red-200" data-aos="fade-up">
+            <h3 class="text-lg font-bold text-red-600 mb-4">
+                <i class="fas fa-exclamation-triangle mr-2"></i>Danger Zone
+            </h3>
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <p class="font-medium text-accent">Delete this trip</p>
+                    <p class="text-sm text-gray-500">Once deleted, this trip cannot be recovered.</p>
+                </div>
+                <button onclick="confirmDelete()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl transition-colors">
+                    <i class="fas fa-trash-alt mr-2"></i>Delete Trip
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade modal-payanam" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center py-8">
+                <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-trash-alt text-red-500 text-3xl"></i>
+                </div>
+                <h4 class="text-xl font-bold text-accent mb-2">Delete Trip?</h4>
+                <p class="text-gray-500 mb-6">Are you sure you want to delete "{{ trip.trip_name }}"? This action cannot be undone.</p>
+                <div class="flex gap-4 justify-center">
+                    <button class="btn-payanam-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button onclick="deleteTrip()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl transition-colors">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Character count for description
+    document.getElementById('tripDescription').addEventListener('input', function() {
+        document.getElementById('descCount').textContent = this.value.length;
+    });
+    
+    // Date validation
+    document.getElementById('startDate').addEventListener('change', function() {
+        document.getElementById('endDate').min = this.value;
+        if (document.getElementById('endDate').value && document.getElementById('endDate').value < this.value) {
+            document.getElementById('endDate').value = this.value;
+        }
+    });
+    
+    // Image preview
+    document.getElementById('coverImage').addEventListener('input', function() {
+        const preview = document.getElementById('imagePreview');
+        const img = preview.querySelector('img');
+        
+        if (this.value) {
+            img.src = this.value;
+            preview.classList.remove('hidden');
+        } else {
+            preview.classList.add('hidden');
+        }
+    });
+    
+    // Form submission
+    document.getElementById('editTripForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const tripName = document.getElementById('tripName').value.trim();
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        
+        // Validation
+        if (!tripName) {
+            showToast('Please enter a trip name', 'error');
+            return;
+        }
+        
+        if (!startDate || !endDate) {
+            showToast('Please select both start and end dates', 'error');
+            return;
+        }
+        
+        if (new Date(endDate) < new Date(startDate)) {
+            showToast('End date cannot be before start date', 'error');
+            return;
+        }
+        
+        const category = document.querySelector('input[name="category"]:checked');
+        
+        const tripData = {
+            trip_name: tripName,
+            trip_description: document.getElementById('tripDescription').value.trim(),
+            start_date: startDate,
+            end_date: endDate,
+            trip_category: category ? category.value : 'adventure',
+            total_budget: parseFloat(document.getElementById('totalBudget').value) || 0,
+            cover_image: document.getElementById('coverImage').value.trim(),
+            is_public: document.getElementById('isPublic').checked
+        };
+        
+        // Submit
+        fetch('/api/trip/{{ trip.trip_id }}/update', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(tripData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Trip updated successfully!', 'success');
+                setTimeout(() => {
+                    window.location.href = "{{ url_for('view_trip', trip_id=trip.trip_id) }}";
+                }, 1000);
+            } else {
+                showToast(data.message || 'Failed to update trip', 'error');
+            }
+        })
+        .catch(error => {
+            showToast('An error occurred', 'error');
+        });
+    });
+    
+    function confirmDelete() {
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    }
+    
+    function deleteTrip() {
+        fetch('/api/trip/{{ trip.trip_id }}/delete', {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Trip deleted!', 'success');
+                setTimeout(() => {
+                    window.location.href = "{{ url_for('my_trips') }}";
+                }, 1000);
+            } else {
+                showToast(data.message || 'Failed to delete trip', 'error');
+            }
+        });
+    }
+</script>
+{% endblock %}

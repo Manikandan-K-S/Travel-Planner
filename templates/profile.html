@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - Payanam{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Profile Header -->
+        <div class="card-payanam p-8 mb-8" data-aos="fade-up">
+            <div class="flex flex-col md:flex-row items-center gap-8">
+                <!-- Avatar -->
+                <div class="relative">
+                    <div class="w-32 h-32 gradient-primary rounded-full flex items-center justify-center text-white text-5xl font-bold shadow-lg" id="avatarDisplay">
+                        {{ session.user_name[0]|upper if session.user_name else 'U' }}
+                    </div>
+                    <button onclick="changeAvatar()" class="absolute bottom-0 right-0 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-primary hover:bg-cream transition-colors">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                </div>
+                
+                <!-- User Info -->
+                <div class="flex-1 text-center md:text-left">
+                    <h1 class="text-3xl font-bold text-accent font-playfair mb-2" id="displayName">{{ session.user_name }}</h1>
+                    <p class="text-gray-500 mb-4">
+                        <i class="fas fa-envelope mr-2"></i>{{ session.user_email }}
+                    </p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-4">
+                        <div class="bg-cream px-4 py-2 rounded-lg">
+                            <span class="font-bold text-accent" id="tripCount">0</span>
+                            <span class="text-gray-500 text-sm ml-1">Trips</span>
+                        </div>
+                        <div class="bg-cream px-4 py-2 rounded-lg">
+                            <span class="font-bold text-accent" id="cityCount">0</span>
+                            <span class="text-gray-500 text-sm ml-1">Cities</span>
+                        </div>
+                        <div class="bg-cream px-4 py-2 rounded-lg">
+                            <span class="font-bold text-accent" id="memberSince">-</span>
+                            <span class="text-gray-500 text-sm ml-1">Member</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div>
+                    <button onclick="toggleEditMode()" class="btn-payanam-outline" id="editBtn">
+                        <i class="fas fa-edit mr-2"></i>Edit Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Edit Profile Form (Hidden by default) -->
+        <div id="editSection" class="card-payanam p-8 mb-8 hidden" data-aos="fade-up">
+            <h3 class="text-xl font-bold text-accent mb-6">
+                <i class="fas fa-user-edit text-primary mr-2"></i>Edit Profile
+            </h3>
+            
+            <form id="profileForm">
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block font-medium text-accent mb-2">Display Name</label>
+                        <input type="text" id="editName" class="input-payanam w-full" 
+                               value="{{ session.user_name }}" maxlength="50" required>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-accent mb-2">Email</label>
+                        <input type="email" id="editEmail" class="input-payanam w-full bg-gray-100" 
+                               value="{{ session.user_email }}" disabled>
+                        <p class="text-xs text-gray-500 mt-1">Email cannot be changed</p>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block font-medium text-accent mb-2">Bio</label>
+                    <textarea id="editBio" class="input-payanam w-full h-24 resize-none" 
+                              maxlength="200" placeholder="Tell us about yourself..."></textarea>
+                    <p class="text-xs text-gray-500 mt-1"><span id="bioCount">0</span>/200 characters</p>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block font-medium text-accent mb-2">Home City</label>
+                    <input type="text" id="editCity" class="input-payanam w-full" 
+                           placeholder="e.g., Chennai, Bangalore, Mumbai">
+                </div>
+                
+                <div class="flex gap-4">
+                    <button type="submit" class="btn-payanam">
+                        <i class="fas fa-save mr-2"></i>Save Changes
+                    </button>
+                    <button type="button" onclick="toggleEditMode()" class="btn-payanam-outline">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Travel Preferences -->
+        <div class="card-payanam p-8 mb-8" data-aos="fade-up">
+            <h3 class="text-xl font-bold text-accent mb-6">
+                <i class="fas fa-heart text-primary mr-2"></i>Travel Preferences
+            </h3>
+            
+            <div class="mb-6">
+                <label class="block font-medium text-accent mb-3">Favorite Categories</label>
+                <div class="flex flex-wrap gap-3" id="categoryPrefs">
+                    {% set categories = ['Adventure', 'Heritage', 'Pilgrimage', 'Beach', 'Nature', 'City', 'Honeymoon', 'Family'] %}
+                    {% for cat in categories %}
+                    <label class="cursor-pointer">
+                        <input type="checkbox" class="hidden peer" value="{{ cat.lower() }}">
+                        <span class="px-4 py-2 rounded-full border-2 border-gray-200 text-gray-600 transition-all peer-checked:border-primary peer-checked:bg-primary peer-checked:text-white">
+                            {{ cat }}
+                        </span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block font-medium text-accent mb-3">Preferred States</label>
+                <div class="flex flex-wrap gap-3" id="statePrefs">
+                    {% set states = ['Rajasthan', 'Tamil Nadu', 'Kerala', 'Goa', 'Karnataka', 'Maharashtra', 'Himachal Pradesh', 'Uttarakhand'] %}
+                    {% for state in states %}
+                    <label class="cursor-pointer">
+                        <input type="checkbox" class="hidden peer" value="{{ state.lower() }}">
+                        <span class="px-4 py-2 rounded-full border-2 border-gray-200 text-gray-600 transition-all peer-checked:border-primary peer-checked:bg-primary peer-checked:text-white">
+                            {{ state }}
+                        </span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <button onclick="savePreferences()" class="btn-payanam">
+                <i class="fas fa-save mr-2"></i>Save Preferences
+            </button>
+        </div>
+        
+        <!-- Travel Stats -->
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="card-payanam p-6 text-center" data-aos="fade-up">
+                <div class="w-16 h-16 gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-route text-white text-2xl"></i>
+                </div>
+                <div class="text-3xl font-bold text-accent mb-1" id="statTrips">0</div>
+                <div class="text-gray-500">Total Trips</div>
+            </div>
+            <div class="card-payanam p-6 text-center" data-aos="fade-up" data-aos-delay="100">
+                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-hiking text-white text-2xl"></i>
+                </div>
+                <div class="text-3xl font-bold text-accent mb-1" id="statActivities">0</div>
+                <div class="text-gray-500">Activities Done</div>
+            </div>
+            <div class="card-payanam p-6 text-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-rupee-sign text-white text-2xl"></i>
+                </div>
+                <div class="text-3xl font-bold text-accent mb-1" id="statSpent">₹0</div>
+                <div class="text-gray-500">Total Spent</div>
+            </div>
+        </div>
+        
+        <!-- Recent Trips -->
+        <div class="card-payanam p-8" data-aos="fade-up">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-accent">
+                    <i class="fas fa-history text-primary mr-2"></i>Recent Trips
+                </h3>
+                <a href="{{ url_for('my_trips') }}" class="text-primary hover:text-accent transition-colors">
+                    View All <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+            
+            <div id="recentTrips" class="space-y-4">
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                    <p>Loading trips...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Account Settings -->
+        <div class="card-payanam p-8 mt-8" data-aos="fade-up">
+            <h3 class="text-xl font-bold text-accent mb-6">
+                <i class="fas fa-cog text-primary mr-2"></i>Account Settings
+            </h3>
+            
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-4 bg-cream rounded-xl">
+                    <div>
+                        <div class="font-medium text-accent">Email Notifications</div>
+                        <div class="text-sm text-gray-500">Get trip reminders and updates</div>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+                
+                <div class="flex items-center justify-between p-4 bg-cream rounded-xl">
+                    <div>
+                        <div class="font-medium text-accent">Public Profile</div>
+                        <div class="text-sm text-gray-500">Allow others to see your profile</div>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <button onclick="logout()" class="text-red-500 hover:text-red-600 transition-colors">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Load profile data
+    document.addEventListener('DOMContentLoaded', function() {
+        loadProfileStats();
+        loadRecentTrips();
+        loadPreferences();
+    });
+    
+    function loadProfileStats() {
+        // This would typically fetch from API
+        // For demo, using localStorage
+        const trips = JSON.parse(localStorage.getItem('payanam_trips') || '[]');
+        document.getElementById('tripCount').textContent = trips.length;
+        document.getElementById('statTrips').textContent = trips.length;
+        
+        let cities = new Set();
+        let activities = 0;
+        let spent = 0;
+        
+        trips.forEach(trip => {
+            spent += trip.total_budget || 0;
+            if (trip.itinerary && trip.itinerary.stops) {
+                trip.itinerary.stops.forEach(stop => {
+                    cities.add(stop.city_name);
+                    if (stop.days) {
+                        stop.days.forEach(day => {
+                            activities += (day.activities || []).length;
+                        });
+                    }
+                });
+            }
+        });
+        
+        document.getElementById('cityCount').textContent = cities.size;
+        document.getElementById('statActivities').textContent = activities;
+        document.getElementById('statSpent').textContent = '₹' + spent.toLocaleString();
+        
+        // Member since
+        const user = JSON.parse(localStorage.getItem('payanam_user') || '{}');
+        if (user.created_at) {
+            const date = new Date(user.created_at);
+            document.getElementById('memberSince').textContent = date.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+        } else {
+            document.getElementById('memberSince').textContent = 'New';
+        }
+    }
+    
+    function loadRecentTrips() {
+        fetch('/api/trips?limit=3')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('recentTrips');
+                
+                if (!data.trips || data.trips.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-8">
+                            <div class="w-16 h-16 gradient-cream rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-map-marked-alt text-primary text-2xl"></i>
+                            </div>
+                            <p class="text-gray-500 mb-4">No trips yet</p>
+                            <a href="${window.location.origin}/trip/create" class="btn-payanam inline-flex items-center gap-2 no-underline">
+                                <i class="fas fa-plus"></i>Create First Trip
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = data.trips.map(trip => `
+                    <a href="/trip/${trip.trip_id}" class="flex items-center gap-4 p-4 bg-cream rounded-xl hover:bg-primary/10 transition-colors no-underline">
+                        <div class="w-16 h-16 gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-suitcase-rolling text-white text-xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-medium text-accent truncate">${trip.trip_name}</div>
+                            <div class="text-sm text-gray-500">${trip.start_date} - ${trip.end_date}</div>
+                        </div>
+                        <span class="badge-payanam text-xs capitalize">${trip.trip_category}</span>
+                    </a>
+                `).join('');
+            })
+            .catch(error => {
+                document.getElementById('recentTrips').innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <p>Could not load trips</p>
+                    </div>
+                `;
+            });
+    }
+    
+    function toggleEditMode() {
+        const editSection = document.getElementById('editSection');
+        const editBtn = document.getElementById('editBtn');
+        
+        editSection.classList.toggle('hidden');
+        editBtn.innerHTML = editSection.classList.contains('hidden') 
+            ? '<i class="fas fa-edit mr-2"></i>Edit Profile' 
+            : '<i class="fas fa-times mr-2"></i>Cancel';
+    }
+    
+    document.getElementById('editBio').addEventListener('input', function() {
+        document.getElementById('bioCount').textContent = this.value.length;
+    });
+    
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('editName').value.trim();
+        
+        if (!name) {
+            showToast('Name is required', 'error');
+            return;
+        }
+        
+        // Save to localStorage for demo
+        const user = JSON.parse(localStorage.getItem('payanam_user') || '{}');
+        user.name = name;
+        user.bio = document.getElementById('editBio').value.trim();
+        user.city = document.getElementById('editCity').value.trim();
+        localStorage.setItem('payanam_user', JSON.stringify(user));
+        
+        document.getElementById('displayName').textContent = name;
+        document.getElementById('avatarDisplay').textContent = name[0].toUpperCase();
+        
+        toggleEditMode();
+        showToast('Profile updated!', 'success');
+    });
+    
+    function loadPreferences() {
+        const prefs = JSON.parse(localStorage.getItem('payanam_preferences') || '{}');
+        
+        if (prefs.categories) {
+            prefs.categories.forEach(cat => {
+                const checkbox = document.querySelector(`#categoryPrefs input[value="${cat}"]`);
+                if (checkbox) checkbox.checked = true;
+            });
+        }
+        
+        if (prefs.states) {
+            prefs.states.forEach(state => {
+                const checkbox = document.querySelector(`#statePrefs input[value="${state}"]`);
+                if (checkbox) checkbox.checked = true;
+            });
+        }
+    }
+    
+    function savePreferences() {
+        const categories = Array.from(document.querySelectorAll('#categoryPrefs input:checked')).map(el => el.value);
+        const states = Array.from(document.querySelectorAll('#statePrefs input:checked')).map(el => el.value);
+        
+        localStorage.setItem('payanam_preferences', JSON.stringify({ categories, states }));
+        showToast('Preferences saved!', 'success');
+    }
+    
+    function changeAvatar() {
+        showToast('Avatar upload coming soon!', 'info');
+    }
+    
+    function logout() {
+        window.location.href = "{{ url_for('logout') }}";
+    }
+</script>
+{% endblock %}

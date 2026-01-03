@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+
+{% block title %}Budget - {{ trip.trip_name }} - Payanam{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8" data-aos="fade-up">
+        <div>
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                <a href="{{ url_for('my_trips') }}" class="hover:text-secondary">My Trips</a>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <a href="{{ url_for('view_trip', trip_id=trip.trip_id) }}" class="hover:text-secondary">{{ trip.trip_name }}</a>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <span class="text-secondary">Budget</span>
+            </div>
+            <h1 class="text-3xl font-bold font-playfair text-accent">Trip Budget</h1>
+            <p class="text-gray-500">{{ trip.trip_name }}</p>
+        </div>
+        <div class="flex gap-3 mt-4 md:mt-0">
+            <a href="{{ url_for('itinerary_builder', trip_id=trip.trip_id) }}" class="btn-payanam-outline no-underline">
+                <i class="fas fa-edit mr-2"></i>Edit Itinerary
+            </a>
+            <button onclick="exportBudget()" class="btn-payanam">
+                <i class="fas fa-download mr-2"></i>Export
+            </button>
+        </div>
+    </div>
+    
+    {% set itinerary = trip.get_itinerary() %}
+    
+    <!-- Budget Overview Cards -->
+    <div class="grid md:grid-cols-4 gap-6 mb-8">
+        <div class="card-payanam p-6 gradient-primary text-white" data-aos="fade-up">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-rupee-sign text-2xl"></i>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold" id="totalBudget">₹0</div>
+                    <div class="opacity-90">Total Budget</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-payanam p-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-camera text-blue-500 text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-accent" id="sightseeingBudget">₹0</div>
+                    <div class="text-gray-500">Sightseeing</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-payanam p-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-utensils text-orange-500 text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-accent" id="foodBudget">₹0</div>
+                    <div class="text-gray-500">Food & Dining</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-payanam p-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-calendar-day text-green-500 text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-accent" id="avgPerDay">₹0</div>
+                    <div class="text-gray-500">Avg. Per Day</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid lg:grid-cols-2 gap-8">
+        <!-- Budget Breakdown Chart -->
+        <div class="card-payanam p-6" data-aos="fade-up">
+            <h3 class="text-xl font-bold text-accent mb-6">
+                <i class="fas fa-chart-pie text-primary mr-2"></i>Budget Breakdown
+            </h3>
+            <div class="relative">
+                <canvas id="budgetPieChart" height="300"></canvas>
+            </div>
+            <div id="chartLegend" class="mt-6 grid grid-cols-2 gap-3">
+            </div>
+        </div>
+        
+        <!-- Per City Breakdown -->
+        <div class="card-payanam p-6" data-aos="fade-up" data-aos-delay="100">
+            <h3 class="text-xl font-bold text-accent mb-6">
+                <i class="fas fa-city text-primary mr-2"></i>Budget by City
+            </h3>
+            <div class="space-y-4" id="cityBudgets">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Daily Breakdown -->
+    <div class="card-payanam p-6 mt-8" data-aos="fade-up">
+        <h3 class="text-xl font-bold text-accent mb-6">
+            <i class="fas fa-calendar-alt text-primary mr-2"></i>Daily Budget Breakdown
+        </h3>
+        <div class="overflow-x-auto">
+            <canvas id="dailyBudgetChart" height="100"></canvas>
+        </div>
+    </div>
+    
+    <!-- Detailed Table -->
+    <div class="card-payanam p-6 mt-8" data-aos="fade-up">
+        <h3 class="text-xl font-bold text-accent mb-6">
+            <i class="fas fa-list text-primary mr-2"></i>Detailed Expenses
+        </h3>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-gray-200">
+                        <th class="text-left py-3 px-4 font-medium text-gray-600">City</th>
+                        <th class="text-left py-3 px-4 font-medium text-gray-600">Day</th>
+                        <th class="text-left py-3 px-4 font-medium text-gray-600">Activity</th>
+                        <th class="text-left py-3 px-4 font-medium text-gray-600">Category</th>
+                        <th class="text-right py-3 px-4 font-medium text-gray-600">Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="expensesTable">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const itinerary = {{ trip.itinerary_json|safe }};
+    
+    // Calculate budgets
+    const categoryBudgets = {
+        sightseeing: 0,
+        food: 0,
+        shopping: 0,
+        adventure: 0,
+        relaxation: 0,
+        travel: 0
+    };
+    
+    const cityBudgets = {};
+    const dailyBudgets = [];
+    let totalBudget = 0;
+    let totalDays = 0;
+    let tableRows = '';
+    
+    (itinerary.stops || []).forEach(stop => {
+        let cityTotal = 0;
+        
+        (stop.days || []).forEach(day => {
+            let dayTotal = 0;
+            
+            (day.activities || []).forEach(activity => {
+                const cost = activity.estimated_cost || 0;
+                totalBudget += cost;
+                cityTotal += cost;
+                dayTotal += cost;
+                
+                const cat = activity.category || 'other';
+                if (categoryBudgets.hasOwnProperty(cat)) {
+                    categoryBudgets[cat] += cost;
+                }
+                
+                tableRows += `
+                    <tr class="border-b border-gray-100 hover:bg-cream transition">
+                        <td class="py-3 px-4">${stop.city_name}</td>
+                        <td class="py-3 px-4">Day ${day.day_number}</td>
+                        <td class="py-3 px-4">${activity.activity_name}</td>
+                        <td class="py-3 px-4 capitalize">${activity.category}</td>
+                        <td class="py-3 px-4 text-right font-bold text-secondary">₹${cost.toLocaleString('en-IN')}</td>
+                    </tr>
+                `;
+            });
+            
+            dailyBudgets.push({
+                label: `${stop.city_name} - Day ${day.day_number}`,
+                value: dayTotal
+            });
+            totalDays++;
+        });
+        
+        cityBudgets[stop.city_name] = cityTotal;
+    });
+    
+    // Update display
+    document.getElementById('totalBudget').textContent = '₹' + totalBudget.toLocaleString('en-IN');
+    document.getElementById('sightseeingBudget').textContent = '₹' + categoryBudgets.sightseeing.toLocaleString('en-IN');
+    document.getElementById('foodBudget').textContent = '₹' + categoryBudgets.food.toLocaleString('en-IN');
+    document.getElementById('avgPerDay').textContent = '₹' + (totalDays > 0 ? Math.round(totalBudget / totalDays).toLocaleString('en-IN') : 0);
+    
+    // City budgets display
+    const maxCityBudget = Math.max(...Object.values(cityBudgets), 1);
+    document.getElementById('cityBudgets').innerHTML = Object.entries(cityBudgets).map(([city, budget]) => `
+        <div class="flex items-center gap-4">
+            <div class="w-24 font-medium text-accent">${city}</div>
+            <div class="flex-1 bg-gray-100 rounded-full h-6 overflow-hidden">
+                <div class="gradient-primary h-full rounded-full transition-all duration-500" style="width: ${(budget / maxCityBudget) * 100}%"></div>
+            </div>
+            <div class="w-24 text-right font-bold text-secondary">₹${budget.toLocaleString('en-IN')}</div>
+        </div>
+    `).join('');
+    
+    // Expenses table
+    document.getElementById('expensesTable').innerHTML = tableRows || `
+        <tr><td colspan="5" class="py-8 text-center text-gray-400">No expenses recorded yet</td></tr>
+    `;
+    
+    // Pie Chart
+    const pieColors = ['#EA7B7B', '#D25353', '#9E3B3B', '#FF9B9B', '#FFB4B4', '#FFC8C8'];
+    const pieData = Object.entries(categoryBudgets).filter(([_, v]) => v > 0);
+    
+    new Chart(document.getElementById('budgetPieChart'), {
+        type: 'doughnut',
+        data: {
+            labels: pieData.map(([k, _]) => k.charAt(0).toUpperCase() + k.slice(1)),
+            datasets: [{
+                data: pieData.map(([_, v]) => v),
+                backgroundColor: pieColors.slice(0, pieData.length),
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            cutout: '60%',
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+    
+    // Chart legend
+    document.getElementById('chartLegend').innerHTML = pieData.map(([cat, value], i) => `
+        <div class="flex items-center gap-2">
+            <div class="w-4 h-4 rounded" style="background: ${pieColors[i]}"></div>
+            <span class="capitalize text-sm">${cat}</span>
+            <span class="ml-auto font-bold text-sm">₹${value.toLocaleString('en-IN')}</span>
+        </div>
+    `).join('');
+    
+    // Daily Budget Bar Chart
+    new Chart(document.getElementById('dailyBudgetChart'), {
+        type: 'bar',
+        data: {
+            labels: dailyBudgets.map(d => d.label),
+            datasets: [{
+                label: 'Daily Budget',
+                data: dailyBudgets.map(d => d.value),
+                backgroundColor: '#EA7B7B',
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '₹' + value.toLocaleString('en-IN');
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    function exportBudget() {
+        let csv = 'City,Day,Activity,Category,Amount\n';
+        (itinerary.stops || []).forEach(stop => {
+            (stop.days || []).forEach(day => {
+                (day.activities || []).forEach(activity => {
+                    csv += `"${stop.city_name}","Day ${day.day_number}","${activity.activity_name}","${activity.category}",${activity.estimated_cost}\n`;
+                });
+            });
+        });
+        
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = '{{ trip.trip_name }}_budget.csv';
+        a.click();
+        showToast('Budget exported successfully!', 'success');
+    }
+</script>
+{% endblock %}

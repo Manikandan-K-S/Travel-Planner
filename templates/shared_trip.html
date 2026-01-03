@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ trip.trip_name }} - Shared Trip | Payanam{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-b from-cream to-white">
+    {% set itinerary = trip.get_itinerary() %}
+    
+    <!-- Hero Section -->
+    <div class="relative">
+        {% if trip.cover_image %}
+        <img src="{{ trip.cover_image }}" alt="{{ trip.trip_name }}" class="w-full h-96 object-cover">
+        {% else %}
+        <div class="w-full h-96 gradient-primary flex items-center justify-center">
+            <i class="fas fa-mountain text-white/30 text-9xl"></i>
+        </div>
+        {% endif %}
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+        
+        <div class="absolute bottom-0 left-0 right-0 p-8">
+            <div class="container mx-auto">
+                <span class="badge-payanam capitalize mb-4 inline-block">{{ trip.trip_category }}</span>
+                <h1 class="text-4xl md:text-5xl font-bold font-playfair text-white mb-4">{{ trip.trip_name }}</h1>
+                <div class="flex flex-wrap items-center gap-6 text-white/90">
+                    <span><i class="fas fa-calendar mr-2"></i>{{ trip.start_date }} - {{ trip.end_date }}</span>
+                    <span><i class="fas fa-city mr-2"></i>{{ itinerary.stops|length }} Cities</span>
+                    <span><i class="fas fa-rupee-sign mr-2"></i>₹{{ "%.0f"|format(trip.total_budget) }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container mx-auto px-4 py-8">
+        <!-- Description -->
+        {% if trip.trip_description %}
+        <div class="card-payanam p-6 mb-8 max-w-4xl mx-auto" data-aos="fade-up">
+            <p class="text-gray-600 text-lg leading-relaxed">{{ trip.trip_description }}</p>
+        </div>
+        {% endif %}
+        
+        <!-- Stats Overview -->
+        <div class="grid md:grid-cols-4 gap-4 mb-12 max-w-4xl mx-auto">
+            <div class="card-payanam p-6 text-center" data-aos="fade-up">
+                <div class="text-4xl font-bold text-primary mb-2">{{ itinerary.stops|length }}</div>
+                <div class="text-gray-500">Cities</div>
+            </div>
+            <div class="card-payanam p-6 text-center" data-aos="fade-up" data-aos-delay="100">
+                <div class="text-4xl font-bold text-primary mb-2" id="totalDays">0</div>
+                <div class="text-gray-500">Days</div>
+            </div>
+            <div class="card-payanam p-6 text-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="text-4xl font-bold text-primary mb-2" id="totalActivities">0</div>
+                <div class="text-gray-500">Activities</div>
+            </div>
+            <div class="card-payanam p-6 text-center" data-aos="fade-up" data-aos-delay="300">
+                <div class="text-4xl font-bold text-primary mb-2">₹{{ "%.0f"|format(trip.total_budget) }}</div>
+                <div class="text-gray-500">Budget</div>
+            </div>
+        </div>
+        
+        <!-- Itinerary Section -->
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl font-bold text-accent font-playfair mb-8 text-center" data-aos="fade-up">
+                <i class="fas fa-route text-primary mr-3"></i>Complete Itinerary
+            </h2>
+            
+            {% if itinerary.stops %}
+            <div class="relative">
+                <!-- Timeline Line -->
+                <div class="absolute left-6 md:left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-primary via-accent to-primary transform -translate-x-1/2 hidden md:block"></div>
+                
+                {% for stop in itinerary.stops %}
+                <div class="relative mb-12" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
+                    <!-- City Header -->
+                    <div class="md:flex items-center mb-6">
+                        <div class="md:w-1/2 md:pr-12 md:text-right mb-4 md:mb-0 {{ 'md:order-2 md:pl-12 md:pr-0 md:text-left' if loop.index is odd else '' }}">
+                            <div class="card-payanam p-6">
+                                <div class="flex items-center gap-3 {{ 'md:flex-row-reverse' if loop.index is odd else '' }}">
+                                    <div class="w-14 h-14 gradient-primary rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-map-marker-alt text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-accent">{{ stop.city_name }}</h3>
+                                        <p class="text-sm text-gray-500">{{ stop.arrival_date }} - {{ stop.departure_date }}</p>
+                                    </div>
+                                </div>
+                                
+                                {% if stop.stop_category %}
+                                <div class="flex flex-wrap gap-2 mt-3 {{ 'md:justify-end' if loop.index is odd else '' }}">
+                                    {% for cat in stop.stop_category %}
+                                    <span class="badge-payanam text-xs capitalize">{{ cat }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Timeline Dot -->
+                        <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-primary rounded-full items-center justify-center text-white font-bold shadow-lg z-10">
+                            {{ loop.index }}
+                        </div>
+                    </div>
+                    
+                    <!-- Days -->
+                    <div class="md:ml-auto md:w-1/2 {{ 'md:mr-auto md:ml-0 md:pl-12' if loop.index is odd else 'md:pr-12' }} space-y-4">
+                        {% for day in stop.days %}
+                        <div class="bg-cream rounded-xl p-5 ml-10 md:ml-0">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
+                                    <span class="text-sm font-bold text-primary">{{ day.day_number }}</span>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-accent">Day {{ day.day_number }}</div>
+                                    <div class="text-xs text-gray-500">{{ day.date }}</div>
+                                </div>
+                            </div>
+                            
+                            {% if day.activities %}
+                            <div class="space-y-2">
+                                {% for activity in day.activities %}
+                                <div class="flex items-start gap-3 p-3 bg-white rounded-lg">
+                                    <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        {% if activity.activity_type == 'sightseeing' %}
+                                        <i class="fas fa-camera text-primary text-sm"></i>
+                                        {% elif activity.activity_type == 'food' %}
+                                        <i class="fas fa-utensils text-primary text-sm"></i>
+                                        {% elif activity.activity_type == 'adventure' %}
+                                        <i class="fas fa-hiking text-primary text-sm"></i>
+                                        {% elif activity.activity_type == 'temple' %}
+                                        <i class="fas fa-om text-primary text-sm"></i>
+                                        {% elif activity.activity_type == 'shopping' %}
+                                        <i class="fas fa-shopping-bag text-primary text-sm"></i>
+                                        {% else %}
+                                        <i class="fas fa-star text-primary text-sm"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="font-medium text-accent">{{ activity.activity_name }}</div>
+                                        <div class="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                                            {% if activity.start_time %}
+                                            <span><i class="far fa-clock mr-1"></i>{{ activity.start_time }}</span>
+                                            {% endif %}
+                                            {% if activity.duration %}
+                                            <span><i class="fas fa-hourglass-half mr-1"></i>{{ activity.duration }}</span>
+                                            {% endif %}
+                                            {% if activity.cost %}
+                                            <span><i class="fas fa-rupee-sign mr-1"></i>{{ activity.cost }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <p class="text-sm text-gray-400 italic">Free day - no activities planned</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-16">
+                <div class="w-24 h-24 gradient-cream rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-map text-primary text-4xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-accent mb-2">No Itinerary Yet</h3>
+                <p class="text-gray-500">This trip's itinerary hasn't been planned yet.</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- CTA -->
+        <div class="text-center mt-16" data-aos="fade-up">
+            <div class="card-payanam p-8 max-w-2xl mx-auto gradient-primary text-white">
+                <h3 class="text-2xl font-bold font-playfair mb-4">Want to plan your own trip?</h3>
+                <p class="opacity-90 mb-6">Create your personalized Indian travel itinerary with Payanam!</p>
+                <a href="{{ url_for('index') }}" class="inline-block bg-white text-primary px-8 py-3 rounded-xl font-semibold hover:bg-cream transition-colors no-underline">
+                    Get Started <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Footer Credit -->
+        <div class="text-center mt-12 text-gray-400 text-sm">
+            <p>Created with <span class="text-primary">♥</span> using Payanam</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const itinerary = {{ trip.itinerary_json|safe }};
+    let totalDays = 0;
+    let totalActivities = 0;
+    
+    (itinerary.stops || []).forEach(stop => {
+        totalDays += (stop.days || []).length;
+        (stop.days || []).forEach(day => {
+            totalActivities += (day.activities || []).length;
+        });
+    });
+    
+    document.getElementById('totalDays').textContent = totalDays;
+    document.getElementById('totalActivities').textContent = totalActivities;
+</script>
+{% endblock %}

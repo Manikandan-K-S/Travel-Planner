@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Payanam - Indian Travel Planner{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#EA7B7B',
+                        secondary: '#D25353',
+                        accent: '#9E3B3B',
+                        cream: '#FFEAD3',
+                        'primary-light': 'rgba(234, 123, 123, 0.1)',
+                        'secondary-light': 'rgba(210, 83, 83, 0.1)',
+                    },
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        :root {
+            --primary: #EA7B7B;
+            --secondary: #D25353;
+            --accent: #9E3B3B;
+            --cream: #FFEAD3;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #FFEAD3 0%, #fff5eb 50%, #fff 100%);
+            min-height: 100vh;
+        }
+        
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--cream);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+        
+        /* Gradient backgrounds */
+        .gradient-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+        
+        .gradient-accent {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+        }
+        
+        .gradient-cream {
+            background: linear-gradient(135deg, var(--cream) 0%, #fff5eb 100%);
+        }
+        
+        /* Glass effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .glass-dark {
+            background: rgba(158, 59, 59, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(234, 123, 123, 0.2);
+        }
+        
+        /* Button styles */
+        .btn-payanam {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(234, 123, 123, 0.4);
+        }
+        
+        .btn-payanam:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(234, 123, 123, 0.5);
+            color: white;
+        }
+        
+        .btn-payanam-outline {
+            background: transparent;
+            color: var(--secondary);
+            border: 2px solid var(--primary);
+            padding: 10px 26px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-payanam-outline:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Card styles */
+        .card-payanam {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(158, 59, 59, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(234, 123, 123, 0.1);
+        }
+        
+        .card-payanam:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(158, 59, 59, 0.15);
+        }
+        
+        /* Input styles */
+        .input-payanam {
+            border: 2px solid rgba(234, 123, 123, 0.3);
+            border-radius: 12px;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .input-payanam:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(234, 123, 123, 0.1);
+            outline: none;
+        }
+        
+        /* Navbar styles */
+        .navbar-payanam {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 30px rgba(158, 59, 59, 0.1);
+        }
+        
+        /* Animation keyframes */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(234, 123, 123, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(234, 123, 123, 0.6); }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        /* Badge styles */
+        .badge-payanam {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        /* Sidebar styles */
+        .sidebar {
+            background: linear-gradient(180deg, #fff 0%, var(--cream) 100%);
+            min-height: 100vh;
+            box-shadow: 4px 0 30px rgba(158, 59, 59, 0.1);
+        }
+        
+        .sidebar-link {
+            color: #666;
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin: 4px 12px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .sidebar-link:hover, .sidebar-link.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+        
+        .sidebar-link i {
+            width: 24px;
+            text-align: center;
+        }
+        
+        /* Toast notifications */
+        .toast-payanam {
+            background: white;
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(158, 59, 59, 0.2);
+        }
+        
+        /* Loading spinner */
+        .spinner-payanam {
+            border: 3px solid rgba(234, 123, 123, 0.2);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Modal styles */
+        .modal-payanam .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 20px 60px rgba(158, 59, 59, 0.2);
+        }
+        
+        .modal-payanam .modal-header {
+            background: linear-gradient(135deg, var(--cream) 0%, #fff5eb 100%);
+            border-radius: 20px 20px 0 0;
+            border-bottom: 1px solid rgba(234, 123, 123, 0.1);
+        }
+        
+        /* Timeline styles */
+        .timeline-line {
+            width: 4px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+        }
+        
+        .timeline-dot {
+            width: 16px;
+            height: 16px;
+            background: var(--secondary);
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(234, 123, 123, 0.3);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .btn-payanam {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    
+    {% block head %}{% endblock %}
+</head>
+<body class="min-h-screen">
+    {% block body %}
+    <!-- Navbar -->
+    <nav class="navbar-payanam fixed top-0 left-0 right-0 z-50 py-3">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between">
+                <a href="{{ url_for('index') }}" class="flex items-center gap-3 no-underline">
+                    <div class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center">
+                        <i class="fas fa-route text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-bold font-playfair text-accent">பயணம்</span>
+                </a>
+                
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="{{ url_for('index') }}" class="text-gray-600 hover:text-secondary transition no-underline font-medium">Home</a>
+                    {% if session.get('user_id') %}
+                    <a href="{{ url_for('dashboard') }}" class="text-gray-600 hover:text-secondary transition no-underline font-medium">Dashboard</a>
+                    <a href="{{ url_for('my_trips') }}" class="text-gray-600 hover:text-secondary transition no-underline font-medium">My Trips</a>
+                    <a href="{{ url_for('analytics') }}" class="text-gray-600 hover:text-secondary transition no-underline font-medium">Analytics</a>
+                    <div class="relative group">
+                        <button class="flex items-center gap-2 text-gray-600 hover:text-secondary transition">
+                            <div class="w-8 h-8 gradient-primary rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-white text-sm"></i>
+                            </div>
+                            <span class="font-medium">{{ session.get('user_name', 'User') }}</span>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 py-2">
+                            <a href="{{ url_for('profile') }}" class="block px-4 py-2 text-gray-600 hover:bg-cream hover:text-secondary transition no-underline">
+                                <i class="fas fa-user-circle mr-2"></i>Profile
+                            </a>
+                            <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-gray-600 hover:bg-cream hover:text-secondary transition no-underline">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" class="btn-payanam-outline no-underline">Login</a>
+                    <a href="{{ url_for('signup') }}" class="btn-payanam no-underline">Get Started</a>
+                    {% endif %}
+                </div>
+                
+                <!-- Mobile menu button -->
+                <button class="md:hidden text-secondary" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-t mt-3 py-4">
+            <div class="container mx-auto px-4 flex flex-col gap-3">
+                <a href="{{ url_for('index') }}" class="text-gray-600 hover:text-secondary transition no-underline py-2">Home</a>
+                {% if session.get('user_id') %}
+                <a href="{{ url_for('dashboard') }}" class="text-gray-600 hover:text-secondary transition no-underline py-2">Dashboard</a>
+                <a href="{{ url_for('my_trips') }}" class="text-gray-600 hover:text-secondary transition no-underline py-2">My Trips</a>
+                <a href="{{ url_for('analytics') }}" class="text-gray-600 hover:text-secondary transition no-underline py-2">Analytics</a>
+                <a href="{{ url_for('profile') }}" class="text-gray-600 hover:text-secondary transition no-underline py-2">Profile</a>
+                <a href="{{ url_for('logout') }}" class="text-gray-600 hover:text-secondary transition no-underline py-2">Logout</a>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="text-gray-600 hover:text-secondary transition no-underline py-2">Login</a>
+                <a href="{{ url_for('signup') }}" class="btn-payanam text-center no-underline">Get Started</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <main class="pt-20">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    {% block footer %}
+    <footer class="gradient-cream py-12 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center">
+                            <i class="fas fa-route text-white text-lg"></i>
+                        </div>
+                        <span class="text-2xl font-bold font-playfair text-accent">பயணம்</span>
+                    </div>
+                    <p class="text-gray-600">Your ultimate Indian travel companion. Plan, explore, and create memories across incredible India.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-accent mb-4">Popular Destinations</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li><i class="fas fa-map-marker-alt text-primary mr-2"></i>Rajasthan</li>
+                        <li><i class="fas fa-map-marker-alt text-primary mr-2"></i>Tamil Nadu</li>
+                        <li><i class="fas fa-map-marker-alt text-primary mr-2"></i>Kerala</li>
+                        <li><i class="fas fa-map-marker-alt text-primary mr-2"></i>Goa</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-accent mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{{ url_for('index') }}" class="text-gray-600 hover:text-secondary transition no-underline">Home</a></li>
+                        <li><a href="{{ url_for('city_search') if session.get('user_id') else url_for('login') }}" class="text-gray-600 hover:text-secondary transition no-underline">Explore Cities</a></li>
+                        <li><a href="{{ url_for('activity_search') if session.get('user_id') else url_for('login') }}" class="text-gray-600 hover:text-secondary transition no-underline">Activities</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-accent mb-4">Connect</h4>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center text-white hover:opacity-80 transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center text-white hover:opacity-80 transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center text-white hover:opacity-80 transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-primary/20 mt-8 pt-8 text-center text-gray-500">
+                <p>&copy; 2026 Payanam. Made with <i class="fas fa-heart text-primary"></i> for Indian travelers.</p>
+            </div>
+        </div>
+    </footer>
+    {% endblock %}
+    {% endblock %}
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+        
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+        
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-4 right-4 px-6 py-4 rounded-xl shadow-lg z-50 animate__animated animate__fadeInUp ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white`;
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} mr-2"></i>${message}`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('animate__fadeInUp');
+                toast.classList.add('animate__fadeOutDown');
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+        
+        // Confirm dialog
+        function confirmDialog(message, callback) {
+            if (confirm(message)) {
+                callback();
+            }
+        }
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

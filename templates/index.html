@@ -1,0 +1,557 @@
+{% extends 'base.html' %}
+
+{% block title %}Payanam - Explore Incredible India{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-center overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 z-0">
+        <div class="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+        <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-cream rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+    </div>
+    
+    <div class="container mx-auto px-4 py-20 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <!-- Left Content -->
+            <div data-aos="fade-right">
+                <div class="inline-flex items-center gap-2 bg-cream px-4 py-2 rounded-full mb-6">
+                    <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                    <span class="text-secondary font-medium text-sm">Your Journey Begins Here</span>
+                </div>
+                
+                <h1 class="text-5xl lg:text-7xl font-bold font-playfair text-accent mb-6 leading-tight">
+                    Discover the Magic of 
+                    <span class="text-transparent bg-clip-text gradient-primary bg-gradient-to-r from-primary to-secondary">India</span>
+                </h1>
+                
+                <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+                    From the golden sands of Rajasthan to the serene temples of Tamil Nadu, 
+                    plan your perfect Indian adventure with <span class="font-bold text-secondary">பயணம்</span> (Payanam).
+                </p>
+                
+                <div class="flex flex-wrap gap-4 mb-12">
+                    <a href="{{ url_for('signup') }}" class="btn-payanam text-lg px-8 py-4 no-underline flex items-center gap-2">
+                        <i class="fas fa-compass"></i>
+                        Start Planning
+                    </a>
+                    <a href="#destinations" class="btn-payanam-outline text-lg px-8 py-4 no-underline flex items-center gap-2">
+                        <i class="fas fa-map-marked-alt"></i>
+                        Explore Destinations
+                    </a>
+                </div>
+                
+                <!-- Stats -->
+                <div class="flex flex-wrap gap-8">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-secondary">500+</div>
+                        <div class="text-gray-500 text-sm">Destinations</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-secondary">1000+</div>
+                        <div class="text-gray-500 text-sm">Activities</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-secondary">29</div>
+                        <div class="text-gray-500 text-sm">States</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Content - Image Grid -->
+            <div class="relative" data-aos="fade-left">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-4">
+                        <div class="relative overflow-hidden rounded-2xl shadow-xl transform hover:scale-105 transition duration-500">
+                            <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400" alt="Taj Mahal" class="w-full h-48 object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                                <span class="text-white font-medium">Taj Mahal, Agra</span>
+                            </div>
+                        </div>
+                        <div class="relative overflow-hidden rounded-2xl shadow-xl transform hover:scale-105 transition duration-500 float-animation">
+                            <img src="https://images.unsplash.com/photo-1590766940554-634931ab6293?w=400" alt="Meenakshi Temple" class="w-full h-64 object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                                <span class="text-white font-medium">Meenakshi Temple, Madurai</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4 pt-8">
+                        <div class="relative overflow-hidden rounded-2xl shadow-xl transform hover:scale-105 transition duration-500 float-animation" style="animation-delay: 0.5s">
+                            <img src="https://images.unsplash.com/photo-1599661046289-e31897846e41?w=400" alt="Hawa Mahal" class="w-full h-64 object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                                <span class="text-white font-medium">Hawa Mahal, Jaipur</span>
+                            </div>
+                        </div>
+                        <div class="relative overflow-hidden rounded-2xl shadow-xl transform hover:scale-105 transition duration-500">
+                            <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=400" alt="Kerala Backwaters" class="w-full h-48 object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                                <span class="text-white font-medium">Backwaters, Kerala</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Floating Card -->
+                <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl pulse-glow" data-aos="zoom-in" data-aos-delay="500">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 gradient-primary rounded-full flex items-center justify-center">
+                            <i class="fas fa-plane text-white"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500">Plan Your Trip</div>
+                            <div class="font-bold text-accent">Anytime, Anywhere</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+        <a href="#features" class="text-primary text-2xl">
+            <i class="fas fa-chevron-down"></i>
+        </a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <span class="badge-payanam mb-4">Why Payanam?</span>
+            <h2 class="text-4xl lg:text-5xl font-bold font-playfair text-accent mb-4">
+                Plan Smarter, Travel Better
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Everything you need to create the perfect Indian itinerary, all in one place.
+            </p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Feature 1 -->
+            <div class="card-payanam p-8 text-center group" data-aos="fade-up" data-aos-delay="100">
+                <div class="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition">
+                    <i class="fas fa-map-marked-alt text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-accent mb-3">Smart Itinerary</h3>
+                <p class="text-gray-600">Build day-wise plans with cities, activities, and budget tracking all in one place.</p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="card-payanam p-8 text-center group" data-aos="fade-up" data-aos-delay="200">
+                <div class="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition">
+                    <i class="fas fa-rupee-sign text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-accent mb-3">Budget Tracker</h3>
+                <p class="text-gray-600">Keep track of expenses with automatic cost calculations and visual breakdowns.</p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="card-payanam p-8 text-center group" data-aos="fade-up" data-aos-delay="300">
+                <div class="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition">
+                    <i class="fas fa-share-alt text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-accent mb-3">Share & Inspire</h3>
+                <p class="text-gray-600">Share your itineraries with friends or copy public trips for inspiration.</p>
+            </div>
+            
+            <!-- Feature 4 -->
+            <div class="card-payanam p-8 text-center group" data-aos="fade-up" data-aos-delay="400">
+                <div class="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition">
+                    <i class="fas fa-chart-pie text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-accent mb-3">Travel Analytics</h3>
+                <p class="text-gray-600">Visualize your travel patterns with beautiful charts and insights.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Destinations Section -->
+<section id="destinations" class="py-20 gradient-cream">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <span class="badge-payanam mb-4">Top Destinations</span>
+            <h2 class="text-4xl lg:text-5xl font-bold font-playfair text-accent mb-4">
+                Explore Incredible India
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                From royal palaces to ancient temples, discover the diverse beauty of India.
+            </p>
+        </div>
+        
+        <!-- State Tabs -->
+        <div class="flex flex-wrap justify-center gap-4 mb-12" data-aos="fade-up">
+            <button onclick="showState('all')" class="state-tab active px-6 py-3 rounded-full font-medium transition" data-state="all">
+                All States
+            </button>
+            <button onclick="showState('rajasthan')" class="state-tab px-6 py-3 rounded-full font-medium transition" data-state="rajasthan">
+                <i class="fas fa-crown mr-2"></i>Rajasthan
+            </button>
+            <button onclick="showState('tamilnadu')" class="state-tab px-6 py-3 rounded-full font-medium transition" data-state="tamilnadu">
+                <i class="fas fa-gopuram mr-2"></i>Tamil Nadu
+            </button>
+            <button onclick="showState('kerala')" class="state-tab px-6 py-3 rounded-full font-medium transition" data-state="kerala">
+                <i class="fas fa-water mr-2"></i>Kerala
+            </button>
+            <button onclick="showState('goa')" class="state-tab px-6 py-3 rounded-full font-medium transition" data-state="goa">
+                <i class="fas fa-umbrella-beach mr-2"></i>Goa
+            </button>
+        </div>
+        
+        <!-- Destination Cards -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="destinationGrid">
+            <!-- Rajasthan -->
+            <div class="destination-card card-payanam overflow-hidden group" data-state="rajasthan" data-aos="fade-up">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600" alt="Jaipur" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute top-4 left-4 bg-white/90 px-3 py-1 rounded-full text-sm font-medium text-secondary">
+                        <i class="fas fa-map-marker-alt mr-1"></i>Rajasthan
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-accent mb-2">Jaipur - Pink City</h3>
+                    <p class="text-gray-600 mb-4">Royal palaces, vibrant bazaars, and the iconic Hawa Mahal await you.</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-sm text-gray-500">
+                            <i class="fas fa-camera"></i>
+                            <span>12 attractions</span>
+                        </div>
+                        <span class="badge-payanam">Heritage</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="destination-card card-payanam overflow-hidden group" data-state="rajasthan" data-aos="fade-up" data-aos-delay="100">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1477587458883-47145ed94245?w=600" alt="Udaipur" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute top-4 left-4 bg-white/90 px-3 py-1 rounded-full text-sm font-medium text-secondary">
+                        <i class="fas fa-map-marker-alt mr-1"></i>Rajasthan
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-accent mb-2">Udaipur - City of Lakes</h3>
+                    <p class="text-gray-600 mb-4">Romantic lakes, majestic palaces, and stunning sunset views.</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-sm text-gray-500">
+                            <i class="fas fa-camera"></i>
+                            <span>10 attractions</span>
+                        </div>
+                        <span class="badge-payanam">Romantic</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="destination-card card-payanam overflow-hidden group" data-state="rajasthan" data-aos="fade-up" data-aos-delay="200">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1587135941948-670b381f08ce?w=600" alt="Jaisalmer" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute top-4 left-4 bg-white/90 px-3 py-1 rounded-full text-sm font-medium text-secondary">
+                        <i class="fas fa-map-marker-alt mr-1"></i>Rajasthan
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-accent mb-2">Jaisalmer - Golden City</h3>
+                    <p class="text-gray-600 mb-4">Desert safaris, golden fort, and magical sand dunes.</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-sm text-gray-500">
+                            <i class="fas fa-camera"></i>
+                            <span>8 attractions</span>
+                        </div>
+                        <span class="badge-payanam">Desert</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tamil Nadu -->
+            <div class="destination-card card-payanam overflow-hidden group" data-state="tamilnadu" data-aos="fade-up">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600" alt="Chennai" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute top-4 left-4 bg-white/90 px-3 py-1 rounded-full text-sm font-medium text-secondary">
+                        <i class="fas fa-map-marker-alt mr-1"></i>Tamil Nadu
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-accent mb-2">Chennai - Gateway to South</h3>
+                    <p class="text-gray-600 mb-4">Beaches, temples, and the vibrant culture of Tamil Nadu's capital.</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-sm text-gray-500">
+                            <i class="fas fa-camera"></i>
+                            <span>15 attractions</span>
+                        </div>
+                        <span class="badge-payanam">Cultural</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="destination-card card-payanam overflow-hidden group" data-state="tamilnadu" data-aos="fade-up" data-aos-delay="100">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1590766940554-634931ab6293?w=600" alt="Madurai" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute top-4 left-4 bg-white/90 px-3 py-1 rounded-full text-sm font-medium text-secondary">
+                        <i class="fas fa-map-marker-alt mr-1"></i>Tamil Nadu
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-accent mb-2">Madurai - Temple City</h3>
+                    <p class="text-gray-600 mb-4">Home to the magnificent Meenakshi Amman Temple and rich heritage.</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-sm text-gray-500">
+                            <i class="fas fa-camera"></i>
+                            <span>8 attractions</span>
+                        </div>
+                        <span class="badge-payanam">Heritage</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="destination-card card-payanam overflow-hidden group" data-state="tamilnadu" data-aos="fade-up" data-aos-delay="200">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600" alt="Coimbatore" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute top-4 left-4 bg-white/90 px-3 py-1 rounded-full text-sm font-medium text-secondary">
+                        <i class="fas fa-map-marker-alt mr-1"></i>Tamil Nadu
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-accent mb-2">Coimbatore - Manchester of South</h3>
+                    <p class="text-gray-600 mb-4">Gateway to Ooty, textile hub, and spiritual destinations.</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-sm text-gray-500">
+                            <i class="fas fa-camera"></i>
+                            <span>10 attractions</span>
+                        </div>
+                        <span class="badge-payanam">Spiritual</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Kerala -->
+            <div class="destination-card card-payanam overflow-hidden group" data-state="kerala" data-aos="fade-up">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600" alt="Alleppey" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute top-4 left-4 bg-white/90 px-3 py-1 rounded-full text-sm font-medium text-secondary">
+                        <i class="fas fa-map-marker-alt mr-1"></i>Kerala
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-accent mb-2">Alleppey - Venice of the East</h3>
+                    <p class="text-gray-600 mb-4">Serene backwaters, houseboats, and lush green landscapes.</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-sm text-gray-500">
+                            <i class="fas fa-camera"></i>
+                            <span>6 attractions</span>
+                        </div>
+                        <span class="badge-payanam">Nature</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="destination-card card-payanam overflow-hidden group" data-state="kerala" data-aos="fade-up" data-aos-delay="100">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1593693397690-362cb9666fc2?w=600" alt="Munnar" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute top-4 left-4 bg-white/90 px-3 py-1 rounded-full text-sm font-medium text-secondary">
+                        <i class="fas fa-map-marker-alt mr-1"></i>Kerala
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-accent mb-2">Munnar - Tea Country</h3>
+                    <p class="text-gray-600 mb-4">Rolling tea plantations, misty mountains, and cool climate.</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-sm text-gray-500">
+                            <i class="fas fa-camera"></i>
+                            <span>9 attractions</span>
+                        </div>
+                        <span class="badge-payanam">Hill Station</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Goa -->
+            <div class="destination-card card-payanam overflow-hidden group" data-state="goa" data-aos="fade-up">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=600" alt="Goa Beaches" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute top-4 left-4 bg-white/90 px-3 py-1 rounded-full text-sm font-medium text-secondary">
+                        <i class="fas fa-map-marker-alt mr-1"></i>Goa
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-accent mb-2">Goa - Beach Paradise</h3>
+                    <p class="text-gray-600 mb-4">Sun-kissed beaches, Portuguese heritage, and vibrant nightlife.</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-sm text-gray-500">
+                            <i class="fas fa-camera"></i>
+                            <span>20 attractions</span>
+                        </div>
+                        <span class="badge-payanam">Beach</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <span class="badge-payanam mb-4">Simple & Easy</span>
+            <h2 class="text-4xl lg:text-5xl font-bold font-playfair text-accent mb-4">
+                How Payanam Works
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Plan your perfect trip in just a few simple steps.
+            </p>
+        </div>
+        
+        <div class="grid md:grid-cols-4 gap-8">
+            <div class="text-center relative" data-aos="fade-up" data-aos-delay="100">
+                <div class="w-20 h-20 gradient-primary rounded-full flex items-center justify-center mx-auto mb-6 text-white text-2xl font-bold">1</div>
+                <h3 class="text-xl font-bold text-accent mb-3">Create Account</h3>
+                <p class="text-gray-600">Sign up in seconds with just your name and email.</p>
+                <div class="hidden md:block absolute top-10 left-full w-full h-1 bg-gradient-to-r from-primary to-transparent -z-10"></div>
+            </div>
+            
+            <div class="text-center relative" data-aos="fade-up" data-aos-delay="200">
+                <div class="w-20 h-20 gradient-primary rounded-full flex items-center justify-center mx-auto mb-6 text-white text-2xl font-bold">2</div>
+                <h3 class="text-xl font-bold text-accent mb-3">Plan Trip</h3>
+                <p class="text-gray-600">Set your dates, choose destinations, and pick activities.</p>
+                <div class="hidden md:block absolute top-10 left-full w-full h-1 bg-gradient-to-r from-primary to-transparent -z-10"></div>
+            </div>
+            
+            <div class="text-center relative" data-aos="fade-up" data-aos-delay="300">
+                <div class="w-20 h-20 gradient-primary rounded-full flex items-center justify-center mx-auto mb-6 text-white text-2xl font-bold">3</div>
+                <h3 class="text-xl font-bold text-accent mb-3">Track Budget</h3>
+                <p class="text-gray-600">Monitor expenses with real-time cost calculations.</p>
+                <div class="hidden md:block absolute top-10 left-full w-full h-1 bg-gradient-to-r from-primary to-transparent -z-10"></div>
+            </div>
+            
+            <div class="text-center" data-aos="fade-up" data-aos-delay="400">
+                <div class="w-20 h-20 gradient-primary rounded-full flex items-center justify-center mx-auto mb-6 text-white text-2xl font-bold">4</div>
+                <h3 class="text-xl font-bold text-accent mb-3">Share & Go!</h3>
+                <p class="text-gray-600">Share your itinerary and enjoy your adventure!</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 gradient-primary relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="text-center text-white" data-aos="zoom-in">
+            <h2 class="text-4xl lg:text-5xl font-bold font-playfair mb-6">
+                Ready to Explore India?
+            </h2>
+            <p class="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
+                Join thousands of travelers who plan their perfect Indian adventures with Payanam.
+            </p>
+            <a href="{{ url_for('signup') }}" class="inline-flex items-center gap-2 bg-white text-secondary px-8 py-4 rounded-full font-bold text-lg hover:bg-cream transition shadow-xl no-underline">
+                <i class="fas fa-rocket"></i>
+                Start Your Journey
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="gradient-cream py-12">
+    <div class="container mx-auto px-4">
+        <div class="grid md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center">
+                        <i class="fas fa-route text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-bold font-playfair text-accent">பயணம்</span>
+                </div>
+                <p class="text-gray-600">Your ultimate Indian travel companion. Plan, explore, and create memories across incredible India.</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-accent mb-4">Popular States</h4>
+                <ul class="space-y-2 text-gray-600">
+                    <li><a href="#" class="hover:text-secondary transition no-underline"><i class="fas fa-crown text-primary mr-2"></i>Rajasthan</a></li>
+                    <li><a href="#" class="hover:text-secondary transition no-underline"><i class="fas fa-gopuram text-primary mr-2"></i>Tamil Nadu</a></li>
+                    <li><a href="#" class="hover:text-secondary transition no-underline"><i class="fas fa-water text-primary mr-2"></i>Kerala</a></li>
+                    <li><a href="#" class="hover:text-secondary transition no-underline"><i class="fas fa-umbrella-beach text-primary mr-2"></i>Goa</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-accent mb-4">Quick Links</h4>
+                <ul class="space-y-2">
+                    <li><a href="{{ url_for('index') }}" class="text-gray-600 hover:text-secondary transition no-underline">Home</a></li>
+                    <li><a href="{{ url_for('signup') }}" class="text-gray-600 hover:text-secondary transition no-underline">Get Started</a></li>
+                    <li><a href="{{ url_for('login') }}" class="text-gray-600 hover:text-secondary transition no-underline">Login</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-accent mb-4">Connect With Us</h4>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center text-white hover:opacity-80 transition">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center text-white hover:opacity-80 transition">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center text-white hover:opacity-80 transition">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center text-white hover:opacity-80 transition">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-primary/20 mt-8 pt-8 text-center text-gray-500">
+            <p>&copy; 2026 Payanam (பயணம்). Made with <i class="fas fa-heart text-primary"></i> for Indian travelers.</p>
+        </div>
+    </div>
+</footer>
+{% endblock %}
+
+{% block scripts %}
+<style>
+    .state-tab {
+        background: white;
+        color: #666;
+        border: 2px solid transparent;
+    }
+    
+    .state-tab:hover {
+        border-color: var(--primary);
+        color: var(--secondary);
+    }
+    
+    .state-tab.active {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        color: white;
+    }
+</style>
+
+<script>
+    function showState(state) {
+        // Update tabs
+        document.querySelectorAll('.state-tab').forEach(tab => {
+            tab.classList.remove('active');
+            if (tab.dataset.state === state) {
+                tab.classList.add('active');
+            }
+        });
+        
+        // Filter cards
+        document.querySelectorAll('.destination-card').forEach(card => {
+            if (state === 'all' || card.dataset.state === state) {
+                card.style.display = 'block';
+                card.classList.add('animate__animated', 'animate__fadeIn');
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,757 @@
+{% extends 'base.html' %}
+
+{% block title %}Itinerary Builder - {{ trip.trip_name }} - Payanam{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between mb-6 gap-4" data-aos="fade-up">
+        <div>
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                <a href="{{ url_for('my_trips') }}" class="hover:text-secondary">My Trips</a>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <span class="text-secondary">{{ trip.trip_name }}</span>
+            </div>
+            <h1 class="text-2xl lg:text-3xl font-bold font-playfair text-accent">{{ trip.trip_name }}</h1>
+            <p class="text-gray-500">{{ trip.start_date }} - {{ trip.end_date }} | <span class="capitalize">{{ trip.trip_category }}</span></p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            <button onclick="saveItinerary()" class="btn-payanam inline-flex items-center gap-2">
+                <i class="fas fa-save"></i>
+                Save Changes
+            </button>
+            <a href="{{ url_for('trip_timeline', trip_id=trip.trip_id) }}" class="btn-payanam-outline inline-flex items-center gap-2 no-underline">
+                <i class="fas fa-eye"></i>
+                Preview
+            </a>
+            <a href="{{ url_for('trip_budget', trip_id=trip.trip_id) }}" class="btn-payanam-outline inline-flex items-center gap-2 no-underline">
+                <i class="fas fa-rupee-sign"></i>
+                Budget
+            </a>
+        </div>
+    </div>
+    
+    <div class="grid lg:grid-cols-3 gap-6">
+        <!-- Left Panel - Add Stop -->
+        <div class="lg:col-span-1">
+            <div class="card-payanam p-6 sticky top-24" data-aos="fade-right">
+                <h3 class="text-lg font-bold text-accent mb-4">
+                    <i class="fas fa-plus-circle text-primary mr-2"></i>Add City/Stop
+                </h3>
+                
+                <form id="addStopForm">
+                    <!-- City Search -->
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">City Name *</label>
+                        <div class="relative">
+                            <input type="text" id="citySearch" 
+                                   class="input-payanam w-full"
+                                   placeholder="Search Indian cities..."
+                                   autocomplete="off"
+                                   required>
+                            <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                        <!-- City Suggestions -->
+                        <div id="citySuggestions" class="absolute z-50 w-full bg-white mt-1 rounded-xl shadow-xl border border-gray-100 hidden max-h-60 overflow-y-auto">
+                        </div>
+                    </div>
+                    
+                    <!-- Stop Categories -->
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Categories</label>
+                        <div class="flex flex-wrap gap-2">
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="stop_category" value="heritage" class="hidden peer">
+                                <span class="px-3 py-1 rounded-full text-sm border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/10 transition">🏰 Heritage</span>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="stop_category" value="spiritual" class="hidden peer">
+                                <span class="px-3 py-1 rounded-full text-sm border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/10 transition">🛕 Spiritual</span>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="stop_category" value="nature" class="hidden peer">
+                                <span class="px-3 py-1 rounded-full text-sm border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/10 transition">🌿 Nature</span>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="stop_category" value="beach" class="hidden peer">
+                                <span class="px-3 py-1 rounded-full text-sm border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/10 transition">🏖️ Beach</span>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="stop_category" value="adventure" class="hidden peer">
+                                <span class="px-3 py-1 rounded-full text-sm border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/10 transition">🏔️ Adventure</span>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="stop_category" value="family" class="hidden peer">
+                                <span class="px-3 py-1 rounded-full text-sm border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/10 transition">👨‍👩‍👧 Family</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Dates -->
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Arrival *</label>
+                            <input type="date" id="arrivalDate" class="input-payanam w-full" required
+                                   min="{{ trip.start_date }}" max="{{ trip.end_date }}">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Departure *</label>
+                            <input type="date" id="departureDate" class="input-payanam w-full" required
+                                   min="{{ trip.start_date }}" max="{{ trip.end_date }}">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-payanam w-full">
+                        <i class="fas fa-plus mr-2"></i>Add Stop
+                    </button>
+                </form>
+                
+                <!-- Quick Add Popular Cities -->
+                <div class="mt-6 pt-6 border-t">
+                    <h4 class="font-medium text-gray-700 mb-3">Quick Add Popular Cities</h4>
+                    <div class="flex flex-wrap gap-2" id="quickAddCities">
+                        <button onclick="quickAddCity('Jaipur')" class="px-3 py-1 text-sm bg-cream text-accent rounded-full hover:bg-primary/20 transition">Jaipur</button>
+                        <button onclick="quickAddCity('Udaipur')" class="px-3 py-1 text-sm bg-cream text-accent rounded-full hover:bg-primary/20 transition">Udaipur</button>
+                        <button onclick="quickAddCity('Coimbatore')" class="px-3 py-1 text-sm bg-cream text-accent rounded-full hover:bg-primary/20 transition">Coimbatore</button>
+                        <button onclick="quickAddCity('Chennai')" class="px-3 py-1 text-sm bg-cream text-accent rounded-full hover:bg-primary/20 transition">Chennai</button>
+                        <button onclick="quickAddCity('Madurai')" class="px-3 py-1 text-sm bg-cream text-accent rounded-full hover:bg-primary/20 transition">Madurai</button>
+                        <button onclick="quickAddCity('Goa')" class="px-3 py-1 text-sm bg-cream text-accent rounded-full hover:bg-primary/20 transition">Goa</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Panel - Itinerary -->
+        <div class="lg:col-span-2">
+            <!-- Budget Summary Bar -->
+            <div class="card-payanam p-4 mb-6 gradient-cream" data-aos="fade-up">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center">
+                            <i class="fas fa-rupee-sign text-white"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500">Total Budget</div>
+                            <div class="text-xl font-bold text-accent" id="totalBudgetDisplay">₹0</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-secondary" id="stopsCount">0</div>
+                            <div class="text-xs text-gray-500">Stops</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-secondary" id="activitiesCount">0</div>
+                            <div class="text-xs text-gray-500">Activities</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stops List -->
+            <div id="stopsContainer">
+                <div class="text-center py-12 card-payanam" id="emptyState" data-aos="fade-up">
+                    <div class="w-20 h-20 gradient-cream rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-map-marked-alt text-primary text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-accent mb-2">Start Building Your Itinerary</h3>
+                    <p class="text-gray-500 mb-4">Add your first city to begin planning your adventure!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Modal -->
+<div class="modal fade modal-payanam" id="activityModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-bold text-accent">
+                    <i class="fas fa-plus-circle text-primary mr-2"></i>Add Activity
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="activityStopIndex">
+                <input type="hidden" id="activityDayIndex">
+                
+                <!-- Activity Search -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2">Activity Name *</label>
+                    <div class="relative">
+                        <input type="text" id="activityName" class="input-payanam w-full" 
+                               placeholder="Search activities..." autocomplete="off" required>
+                        <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <div id="activitySuggestions" class="bg-white mt-1 rounded-xl shadow-xl border border-gray-100 hidden max-h-48 overflow-y-auto">
+                    </div>
+                </div>
+                
+                <!-- Activity Category -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2">Category *</label>
+                    <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="activity_category" value="sightseeing" class="hidden peer" checked>
+                            <span class="block px-3 py-2 rounded-xl text-sm text-center border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/10 transition">
+                                📸 Sightseeing
+                            </span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="activity_category" value="food" class="hidden peer">
+                            <span class="block px-3 py-2 rounded-xl text-sm text-center border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/10 transition">
+                                🍽️ Food
+                            </span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="activity_category" value="shopping" class="hidden peer">
+                            <span class="block px-3 py-2 rounded-xl text-sm text-center border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/10 transition">
+                                🛍️ Shopping
+                            </span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="activity_category" value="adventure" class="hidden peer">
+                            <span class="block px-3 py-2 rounded-xl text-sm text-center border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/10 transition">
+                                🏄 Adventure
+                            </span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="activity_category" value="relaxation" class="hidden peer">
+                            <span class="block px-3 py-2 rounded-xl text-sm text-center border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/10 transition">
+                                💆 Relaxation
+                            </span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="activity_category" value="travel" class="hidden peer">
+                            <span class="block px-3 py-2 rounded-xl text-sm text-center border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-primary/10 transition">
+                                🚗 Travel
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Time & Cost -->
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Time (Optional)</label>
+                        <input type="time" id="activityTime" class="input-payanam w-full">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Estimated Cost (₹) *</label>
+                        <input type="number" id="activityCost" class="input-payanam w-full" 
+                               placeholder="0" min="0" required>
+                    </div>
+                </div>
+                
+                <!-- Notes -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2">Notes (Optional)</label>
+                    <textarea id="activityNotes" class="input-payanam w-full h-20 resize-none" 
+                              placeholder="Any additional notes..."></textarea>
+                </div>
+                
+                <!-- Suggested Activities -->
+                <div id="suggestedActivitiesContainer" class="mt-6 pt-4 border-t hidden">
+                    <h4 class="font-medium text-gray-700 mb-3">
+                        <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>Suggested Activities for <span id="currentCityName"></span>
+                    </h4>
+                    <div id="suggestedActivities" class="flex flex-wrap gap-2">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn-payanam-outline" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-payanam" onclick="addActivity()">
+                    <i class="fas fa-plus mr-2"></i>Add Activity
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Indian Cities Database
+const indianCities = {
+    // Rajasthan
+    'Jaipur': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=200', activities: ['Amber Fort', 'Hawa Mahal', 'City Palace', 'Nahargarh Fort', 'Jantar Mantar', 'Jal Mahal', 'Birla Mandir', 'Albert Hall Museum', 'Johari Bazaar Shopping'] },
+    'Udaipur': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1477587458883-47145ed94245?w=200', activities: ['City Palace', 'Lake Pichola Boat Ride', 'Jag Mandir', 'Sajjangarh Palace', 'Fateh Sagar Lake', 'Bagore Ki Haveli', 'Vintage Car Museum'] },
+    'Jaisalmer': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1587135941948-670b381f08ce?w=200', activities: ['Jaisalmer Fort', 'Sam Sand Dunes', 'Camel Safari', 'Patwon Ki Haveli', 'Desert Camping', 'Gadisar Lake', 'Kuldhara Ghost Village'] },
+    'Jodhpur': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200', activities: ['Mehrangarh Fort', 'Umaid Bhawan Palace', 'Jaswant Thada', 'Mandore Gardens', 'Clock Tower Market', 'Blue City Walk'] },
+    'Pushkar': { state: 'Rajasthan', activities: ['Brahma Temple', 'Pushkar Lake', 'Savitri Temple', 'Camel Fair (Nov)', 'Rose Garden', 'Old Rangji Temple'] },
+    
+    // Tamil Nadu
+    'Chennai': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=200', activities: ['Marina Beach', 'Kapaleeshwarar Temple', 'Fort St. George', 'San Thome Cathedral', 'Government Museum', 'Valluvar Kottam', 'T Nagar Shopping', 'Filter Coffee at Saravana Bhavan'] },
+    'Madurai': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1590766940554-634931ab6293?w=200', activities: ['Meenakshi Amman Temple', 'Thirumalai Nayakkar Palace', 'Gandhi Memorial Museum', 'Banana Market', 'Jigarthanda at Famous', 'Alagar Kovil'] },
+    'Coimbatore': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200', activities: ['Isha Yoga Center', 'Dhyanalinga', 'Marudamalai Temple', 'VOC Park', 'Kovai Kondattam', 'Brookefields Mall', 'Annapoorna Restaurant', 'Siruvani Waterfalls'] },
+    'Ooty': { state: 'Tamil Nadu', activities: ['Botanical Gardens', 'Ooty Lake', 'Nilgiri Mountain Railway', 'Doddabetta Peak', 'Tea Factory Visit', 'Rose Garden', 'Pykara Falls'] },
+    'Kodaikanal': { state: 'Tamil Nadu', activities: ['Kodaikanal Lake', 'Coakers Walk', 'Pillar Rocks', 'Bryant Park', 'Silver Cascade Falls', 'Pine Forest'] },
+    'Thanjavur': { state: 'Tamil Nadu', activities: ['Brihadeeswarar Temple', 'Thanjavur Palace', 'Saraswathi Mahal Library', 'Art Gallery', 'Schwartz Church'] },
+    'Rameswaram': { state: 'Tamil Nadu', activities: ['Ramanathaswamy Temple', 'Pamban Bridge', 'Dhanushkodi', 'Agnitheertham', 'Five-faced Hanuman Temple'] },
+    'Kanyakumari': { state: 'Tamil Nadu', activities: ['Vivekananda Rock Memorial', 'Thiruvalluvar Statue', 'Sunrise/Sunset Point', 'Padmanabhapuram Palace', 'Suchindram Temple'] },
+    
+    // Kerala
+    'Kochi': { state: 'Kerala', activities: ['Fort Kochi', 'Chinese Fishing Nets', 'Mattancherry Palace', 'Jewish Synagogue', 'Kerala Kathakali Show', 'Marine Drive', 'Lulu Mall'] },
+    'Alleppey': { state: 'Kerala', activities: ['Houseboat Stay', 'Backwater Cruise', 'Alleppey Beach', 'Ambalapuzha Temple', 'Coir Factory Visit', 'Kayaking'] },
+    'Munnar': { state: 'Kerala', activities: ['Tea Gardens Walk', 'Eravikulam National Park', 'Mattupetty Dam', 'Echo Point', 'Tea Museum', 'Top Station'] },
+    'Thekkady': { state: 'Kerala', activities: ['Periyar Wildlife Sanctuary', 'Boat Ride', 'Spice Plantation Tour', 'Elephant Ride', 'Bamboo Rafting'] },
+    'Wayanad': { state: 'Kerala', activities: ['Edakkal Caves', 'Banasura Dam', 'Chembra Peak Trek', 'Soochipara Falls', 'Thirunelli Temple'] },
+    'Thiruvananthapuram': { state: 'Kerala', activities: ['Padmanabhaswamy Temple', 'Kovalam Beach', 'Napier Museum', 'Veli Tourist Village'] },
+    
+    // Goa
+    'Goa': { state: 'Goa', activities: ['Baga Beach', 'Calangute Beach', 'Aguada Fort', 'Basilica of Bom Jesus', 'Dudhsagar Falls', 'Saturday Night Market', 'Casino Night', 'Water Sports'] },
+    'Panaji': { state: 'Goa', activities: ['Fontainhas Latin Quarter', 'Church of Our Lady', 'Miramar Beach', 'Casino Cruise', 'Dona Paula'] },
+    
+    // Karnataka
+    'Bangalore': { state: 'Karnataka', activities: ['Lalbagh Botanical Garden', 'Cubbon Park', 'Bangalore Palace', 'UB City Mall', 'Nandi Hills Day Trip', 'Brigade Road Shopping'] },
+    'Mysore': { state: 'Karnataka', activities: ['Mysore Palace', 'Chamundi Hills', 'Brindavan Gardens', 'St. Philomenas Church', 'Mysore Zoo', 'Devaraja Market'] },
+    'Hampi': { state: 'Karnataka', activities: ['Virupaksha Temple', 'Vittala Temple', 'Elephant Stables', 'Hampi Bazaar', 'Coracle Ride', 'Matanga Hill Sunrise'] },
+    
+    // Maharashtra
+    'Mumbai': { state: 'Maharashtra', activities: ['Gateway of India', 'Marine Drive', 'Elephanta Caves', 'Colaba Causeway', 'Siddhivinayak Temple', 'Juhu Beach', 'Film City Tour'] },
+    'Pune': { state: 'Maharashtra', activities: ['Shaniwar Wada', 'Aga Khan Palace', 'Sinhagad Fort', 'Osho Ashram', 'Dagdusheth Halwai Ganpati'] },
+    
+    // Others
+    'Agra': { state: 'Uttar Pradesh', activities: ['Taj Mahal', 'Agra Fort', 'Fatehpur Sikri', 'Mehtab Bagh', 'Itimad-ud-Daulah'] },
+    'Varanasi': { state: 'Uttar Pradesh', activities: ['Ganga Aarti', 'Boat Ride on Ganges', 'Kashi Vishwanath Temple', 'Sarnath', 'Dashashwamedh Ghat'] },
+    'Delhi': { state: 'Delhi', activities: ['Red Fort', 'Qutub Minar', 'India Gate', 'Lotus Temple', 'Humayuns Tomb', 'Chandni Chowk', 'Akshardham Temple'] },
+    'Shimla': { state: 'Himachal Pradesh', activities: ['Mall Road', 'Ridge', 'Jakhoo Temple', 'Christ Church', 'Toy Train Ride', 'Kufri'] },
+    'Manali': { state: 'Himachal Pradesh', activities: ['Rohtang Pass', 'Solang Valley', 'Hadimba Temple', 'Mall Road', 'River Rafting', 'Old Manali Cafes'] },
+    'Rishikesh': { state: 'Uttarakhand', activities: ['Laxman Jhula', 'River Rafting', 'Ganga Aarti at Parmarth', 'Beatles Ashram', 'Bungee Jumping', 'Yoga Session'] },
+    'Darjeeling': { state: 'West Bengal', activities: ['Tiger Hill Sunrise', 'Toy Train', 'Tea Garden Visit', 'Peace Pagoda', 'Batasia Loop', 'Happy Valley Tea Estate'] }
+};
+
+// Current itinerary data
+let itinerary = {{ trip.itinerary_json|safe }};
+if (!itinerary.stops) itinerary.stops = [];
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    renderItinerary();
+    setupCitySearch();
+    setupActivitySearch();
+});
+
+// City Search Setup
+function setupCitySearch() {
+    const input = document.getElementById('citySearch');
+    const suggestions = document.getElementById('citySuggestions');
+    
+    input.addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        if (query.length < 2) {
+            suggestions.classList.add('hidden');
+            return;
+        }
+        
+        const matches = Object.entries(indianCities)
+            .filter(([city, data]) => 
+                city.toLowerCase().includes(query) || 
+                data.state.toLowerCase().includes(query)
+            )
+            .slice(0, 8);
+        
+        if (matches.length === 0) {
+            suggestions.classList.add('hidden');
+            return;
+        }
+        
+        suggestions.innerHTML = matches.map(([city, data]) => `
+            <div class="p-3 hover:bg-cream cursor-pointer flex items-center gap-3 border-b border-gray-50" onclick="selectCity('${city}')">
+                <div class="w-10 h-10 rounded-lg overflow-hidden bg-gray-100">
+                    ${data.image ? `<img src="${data.image}" class="w-full h-full object-cover">` : '<i class="fas fa-city text-gray-400 flex items-center justify-center h-full"></i>'}
+                </div>
+                <div>
+                    <div class="font-medium text-accent">${city}</div>
+                    <div class="text-xs text-gray-500">${data.state}</div>
+                </div>
+            </div>
+        `).join('');
+        
+        suggestions.classList.remove('hidden');
+    });
+    
+    // Hide suggestions on click outside
+    document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+            suggestions.classList.add('hidden');
+        }
+    });
+}
+
+function selectCity(city) {
+    document.getElementById('citySearch').value = city;
+    document.getElementById('citySuggestions').classList.add('hidden');
+}
+
+function quickAddCity(city) {
+    document.getElementById('citySearch').value = city;
+    document.getElementById('arrivalDate').focus();
+}
+
+// Add Stop Form Handler
+document.getElementById('addStopForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const cityName = document.getElementById('citySearch').value.trim();
+    const arrivalDate = document.getElementById('arrivalDate').value;
+    const departureDate = document.getElementById('departureDate').value;
+    
+    if (!cityName || !arrivalDate || !departureDate) {
+        showToast('Please fill all required fields', 'error');
+        return;
+    }
+    
+    if (new Date(departureDate) < new Date(arrivalDate)) {
+        showToast('Departure date must be after arrival date', 'error');
+        return;
+    }
+    
+    const categories = Array.from(document.querySelectorAll('input[name="stop_category"]:checked'))
+        .map(cb => cb.value);
+    
+    // Generate days
+    const days = [];
+    const start = new Date(arrivalDate);
+    const end = new Date(departureDate);
+    let dayNum = 1;
+    
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+        days.push({
+            day_number: dayNum++,
+            date: d.toISOString().split('T')[0],
+            activities: []
+        });
+    }
+    
+    const stop = {
+        city_name: cityName,
+        state: indianCities[cityName]?.state || 'India',
+        stop_category: categories,
+        arrival_date: arrivalDate,
+        departure_date: departureDate,
+        days: days
+    };
+    
+    itinerary.stops.push(stop);
+    renderItinerary();
+    this.reset();
+    showToast(`${cityName} added to your itinerary!`, 'success');
+});
+
+// Render Itinerary
+function renderItinerary() {
+    const container = document.getElementById('stopsContainer');
+    const emptyState = document.getElementById('emptyState');
+    
+    if (itinerary.stops.length === 0) {
+        emptyState.style.display = 'block';
+        container.innerHTML = '';
+        container.appendChild(emptyState);
+        updateStats();
+        return;
+    }
+    
+    emptyState.style.display = 'none';
+    
+    container.innerHTML = itinerary.stops.map((stop, stopIndex) => `
+        <div class="card-payanam mb-6 overflow-hidden" data-aos="fade-up">
+            <!-- Stop Header -->
+            <div class="gradient-primary p-4 text-white">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-xl font-bold">
+                            ${stopIndex + 1}
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold">${stop.city_name}</h3>
+                            <div class="text-sm opacity-90">
+                                ${stop.state || 'India'} • ${stop.arrival_date} to ${stop.departure_date}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="moveStop(${stopIndex}, -1)" class="w-8 h-8 bg-white/20 rounded-full hover:bg-white/30 transition ${stopIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''}" ${stopIndex === 0 ? 'disabled' : ''}>
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button onclick="moveStop(${stopIndex}, 1)" class="w-8 h-8 bg-white/20 rounded-full hover:bg-white/30 transition ${stopIndex === itinerary.stops.length - 1 ? 'opacity-50 cursor-not-allowed' : ''}" ${stopIndex === itinerary.stops.length - 1 ? 'disabled' : ''}>
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                        <button onclick="removeStop(${stopIndex})" class="w-8 h-8 bg-red-500/80 rounded-full hover:bg-red-600 transition">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                ${stop.stop_category && stop.stop_category.length > 0 ? `
+                    <div class="flex gap-2 mt-3">
+                        ${stop.stop_category.map(cat => `<span class="px-2 py-1 bg-white/20 rounded-full text-xs capitalize">${cat}</span>`).join('')}
+                    </div>
+                ` : ''}
+            </div>
+            
+            <!-- Days -->
+            <div class="p-4">
+                ${stop.days.map((day, dayIndex) => `
+                    <div class="mb-4 last:mb-0">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 gradient-accent rounded-full flex items-center justify-center text-white text-sm font-bold">
+                                    D${day.day_number}
+                                </div>
+                                <span class="font-medium text-accent">Day ${day.day_number}</span>
+                                <span class="text-sm text-gray-500">${day.date}</span>
+                            </div>
+                            <button onclick="openActivityModal(${stopIndex}, ${dayIndex})" class="text-primary hover:text-secondary transition text-sm font-medium">
+                                <i class="fas fa-plus mr-1"></i>Add Activity
+                            </button>
+                        </div>
+                        
+                        <div class="ml-10 space-y-2">
+                            ${day.activities.length === 0 ? `
+                                <div class="p-4 bg-gray-50 rounded-xl text-center text-gray-400 text-sm">
+                                    No activities planned yet. Click "Add Activity" to start!
+                                </div>
+                            ` : day.activities.map((activity, actIndex) => `
+                                <div class="p-3 bg-cream rounded-xl flex items-center justify-between group">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 ${getCategoryColor(activity.category)} rounded-lg flex items-center justify-center text-white text-sm">
+                                            ${getCategoryIcon(activity.category)}
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-accent">${activity.activity_name}</div>
+                                            <div class="text-xs text-gray-500">
+                                                ${activity.time ? activity.time + ' • ' : ''}
+                                                <span class="capitalize">${activity.category}</span>
+                                                ${activity.notes ? ' • ' + activity.notes : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="font-bold text-secondary">₹${activity.estimated_cost}</span>
+                                        <button onclick="removeActivity(${stopIndex}, ${dayIndex}, ${actIndex})" class="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+    
+    updateStats();
+}
+
+// Helper functions for activity display
+function getCategoryColor(category) {
+    const colors = {
+        sightseeing: 'bg-blue-500',
+        food: 'bg-orange-500',
+        shopping: 'bg-pink-500',
+        adventure: 'bg-green-500',
+        relaxation: 'bg-purple-500',
+        travel: 'bg-gray-500'
+    };
+    return colors[category] || 'bg-gray-500';
+}
+
+function getCategoryIcon(category) {
+    const icons = {
+        sightseeing: '<i class="fas fa-camera"></i>',
+        food: '<i class="fas fa-utensils"></i>',
+        shopping: '<i class="fas fa-shopping-bag"></i>',
+        adventure: '<i class="fas fa-hiking"></i>',
+        relaxation: '<i class="fas fa-spa"></i>',
+        travel: '<i class="fas fa-car"></i>'
+    };
+    return icons[category] || '<i class="fas fa-star"></i>';
+}
+
+// Activity Modal
+function openActivityModal(stopIndex, dayIndex) {
+    document.getElementById('activityStopIndex').value = stopIndex;
+    document.getElementById('activityDayIndex').value = dayIndex;
+    document.getElementById('activityName').value = '';
+    document.getElementById('activityCost').value = '';
+    document.getElementById('activityTime').value = '';
+    document.getElementById('activityNotes').value = '';
+    
+    // Show suggested activities
+    const cityName = itinerary.stops[stopIndex].city_name;
+    const cityData = indianCities[cityName];
+    
+    if (cityData && cityData.activities) {
+        document.getElementById('currentCityName').textContent = cityName;
+        document.getElementById('suggestedActivities').innerHTML = cityData.activities.map(act => `
+            <button onclick="selectSuggestedActivity('${act}')" class="px-3 py-1 text-sm bg-cream text-accent rounded-full hover:bg-primary/20 transition">
+                ${act}
+            </button>
+        `).join('');
+        document.getElementById('suggestedActivitiesContainer').classList.remove('hidden');
+    } else {
+        document.getElementById('suggestedActivitiesContainer').classList.add('hidden');
+    }
+    
+    const modal = new bootstrap.Modal(document.getElementById('activityModal'));
+    modal.show();
+}
+
+function selectSuggestedActivity(activityName) {
+    document.getElementById('activityName').value = activityName;
+    document.getElementById('activityCost').focus();
+}
+
+// Activity Search Setup
+function setupActivitySearch() {
+    const input = document.getElementById('activityName');
+    const suggestions = document.getElementById('activitySuggestions');
+    
+    input.addEventListener('input', function() {
+        const stopIndex = document.getElementById('activityStopIndex').value;
+        const cityName = itinerary.stops[stopIndex]?.city_name;
+        const cityData = indianCities[cityName];
+        
+        if (!cityData || !cityData.activities) {
+            suggestions.classList.add('hidden');
+            return;
+        }
+        
+        const query = this.value.toLowerCase();
+        if (query.length < 1) {
+            suggestions.classList.add('hidden');
+            return;
+        }
+        
+        const matches = cityData.activities.filter(act => 
+            act.toLowerCase().includes(query)
+        );
+        
+        if (matches.length === 0) {
+            suggestions.classList.add('hidden');
+            return;
+        }
+        
+        suggestions.innerHTML = matches.map(act => `
+            <div class="p-3 hover:bg-cream cursor-pointer" onclick="document.getElementById('activityName').value='${act}'; document.getElementById('activitySuggestions').classList.add('hidden');">
+                ${act}
+            </div>
+        `).join('');
+        
+        suggestions.classList.remove('hidden');
+    });
+}
+
+function addActivity() {
+    const stopIndex = parseInt(document.getElementById('activityStopIndex').value);
+    const dayIndex = parseInt(document.getElementById('activityDayIndex').value);
+    const activityName = document.getElementById('activityName').value.trim();
+    const category = document.querySelector('input[name="activity_category"]:checked').value;
+    const cost = parseFloat(document.getElementById('activityCost').value) || 0;
+    const time = document.getElementById('activityTime').value;
+    const notes = document.getElementById('activityNotes').value.trim();
+    
+    if (!activityName) {
+        showToast('Please enter an activity name', 'error');
+        return;
+    }
+    
+    const activity = {
+        activity_name: activityName,
+        category: category,
+        estimated_cost: cost,
+        time: time,
+        notes: notes
+    };
+    
+    itinerary.stops[stopIndex].days[dayIndex].activities.push(activity);
+    renderItinerary();
+    
+    bootstrap.Modal.getInstance(document.getElementById('activityModal')).hide();
+    showToast('Activity added successfully!', 'success');
+}
+
+function removeActivity(stopIndex, dayIndex, actIndex) {
+    if (confirm('Remove this activity?')) {
+        itinerary.stops[stopIndex].days[dayIndex].activities.splice(actIndex, 1);
+        renderItinerary();
+        showToast('Activity removed', 'success');
+    }
+}
+
+function removeStop(stopIndex) {
+    if (confirm('Remove this city from your itinerary?')) {
+        itinerary.stops.splice(stopIndex, 1);
+        renderItinerary();
+        showToast('City removed from itinerary', 'success');
+    }
+}
+
+function moveStop(index, direction) {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= itinerary.stops.length) return;
+    
+    const temp = itinerary.stops[index];
+    itinerary.stops[index] = itinerary.stops[newIndex];
+    itinerary.stops[newIndex] = temp;
+    renderItinerary();
+}
+
+// Update Stats
+function updateStats() {
+    let totalBudget = 0;
+    let totalActivities = 0;
+    
+    itinerary.stops.forEach(stop => {
+        stop.days.forEach(day => {
+            day.activities.forEach(activity => {
+                totalBudget += activity.estimated_cost || 0;
+                totalActivities++;
+            });
+        });
+    });
+    
+    document.getElementById('totalBudgetDisplay').textContent = '₹' + totalBudget.toLocaleString('en-IN');
+    document.getElementById('stopsCount').textContent = itinerary.stops.length;
+    document.getElementById('activitiesCount').textContent = totalActivities;
+}
+
+// Save Itinerary
+function saveItinerary() {
+    let totalBudget = 0;
+    itinerary.stops.forEach(stop => {
+        stop.days.forEach(day => {
+            day.activities.forEach(activity => {
+                totalBudget += activity.estimated_cost || 0;
+            });
+        });
+    });
+    
+    fetch('/api/trip/{{ trip.trip_id }}/itinerary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(itinerary)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update budget
+            fetch('/api/trip/{{ trip.trip_id }}/budget', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ total_budget: totalBudget })
+            });
+            showToast('Itinerary saved successfully!', 'success');
+        } else {
+            showToast('Failed to save itinerary', 'error');
+        }
+    })
+    .catch(error => {
+        showToast('Failed to save itinerary', 'error');
+    });
+}
+</script>
+{% endblock %}

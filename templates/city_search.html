@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+
+{% block title %}Explore Cities - Payanam{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-12" data-aos="fade-up">
+        <h1 class="text-4xl font-bold text-accent font-playfair mb-4">Explore Indian Cities</h1>
+        <p class="text-gray-600 max-w-2xl mx-auto">Discover incredible destinations across India - from royal Rajasthan to serene Kerala</p>
+    </div>
+    
+    <!-- Search & Filters -->
+    <div class="card-payanam p-6 mb-8" data-aos="fade-up">
+        <div class="flex flex-col md:flex-row gap-4">
+            <!-- Search -->
+            <div class="flex-1 relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="citySearch" class="input-payanam w-full pl-12" 
+                       placeholder="Search cities...">
+            </div>
+            
+            <!-- State Filter -->
+            <select id="stateFilter" class="input-payanam md:w-48">
+                <option value="">All States</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Goa">Goa</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                <option value="Uttarakhand">Uttarakhand</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="West Bengal">West Bengal</option>
+            </select>
+            
+            <!-- Category Filter -->
+            <select id="categoryFilter" class="input-payanam md:w-48">
+                <option value="">All Categories</option>
+                <option value="heritage">Heritage</option>
+                <option value="beach">Beach</option>
+                <option value="hill-station">Hill Station</option>
+                <option value="pilgrimage">Pilgrimage</option>
+                <option value="adventure">Adventure</option>
+                <option value="nature">Nature</option>
+            </select>
+        </div>
+    </div>
+    
+    <!-- Results Count -->
+    <div class="flex items-center justify-between mb-6" data-aos="fade-up">
+        <p class="text-gray-600"><span id="resultCount">0</span> cities found</p>
+        <div class="flex gap-2">
+            <button onclick="setView('grid')" class="p-2 rounded-lg bg-cream hover:bg-primary hover:text-white transition-colors view-btn active" id="gridBtn">
+                <i class="fas fa-th-large"></i>
+            </button>
+            <button onclick="setView('list')" class="p-2 rounded-lg bg-cream hover:bg-primary hover:text-white transition-colors view-btn" id="listBtn">
+                <i class="fas fa-list"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Cities Grid -->
+    <div id="citiesGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Cities will be loaded here -->
+    </div>
+    
+    <!-- Cities List (Hidden by default) -->
+    <div id="citiesList" class="hidden space-y-4">
+        <!-- Cities list will be loaded here -->
+    </div>
+    
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-16">
+        <div class="w-24 h-24 gradient-cream rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-search text-primary text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-bold text-accent mb-2">No cities found</h3>
+        <p class="text-gray-500">Try adjusting your search or filters</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Comprehensive Indian cities database
+    const indianCities = {
+        // Rajasthan
+        'Jaipur': { state: 'Rajasthan', category: 'heritage', image: 'https://images.unsplash.com/photo-1477587458883-47145ed94245', description: 'The Pink City with magnificent forts and palaces', activities: ['Amber Fort', 'Hawa Mahal', 'City Palace', 'Nahargarh Fort', 'Jantar Mantar'] },
+        'Udaipur': { state: 'Rajasthan', category: 'heritage', image: 'https://images.unsplash.com/photo-1568495248636-6432b97bd949', description: 'City of Lakes with romantic palaces', activities: ['City Palace', 'Lake Pichola', 'Jag Mandir', 'Fateh Sagar Lake', 'Monsoon Palace'] },
+        'Jodhpur': { state: 'Rajasthan', category: 'heritage', image: 'https://images.unsplash.com/photo-1599661046827-dacff0c0f09a', description: 'The Blue City dominated by Mehrangarh Fort', activities: ['Mehrangarh Fort', 'Jaswant Thada', 'Umaid Bhawan Palace', 'Clock Tower Market', 'Blue City Walk'] },
+        'Jaisalmer': { state: 'Rajasthan', category: 'heritage', image: 'https://images.unsplash.com/photo-1609766857041-ed402ea8069a', description: 'The Golden City in the heart of Thar Desert', activities: ['Jaisalmer Fort', 'Sam Sand Dunes', 'Patwon Ki Haveli', 'Gadisar Lake', 'Desert Safari'] },
+        'Pushkar': { state: 'Rajasthan', category: 'pilgrimage', image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944', description: 'Sacred lake town with ancient temples', activities: ['Brahma Temple', 'Pushkar Lake', 'Savitri Temple', 'Pushkar Fair', 'Rose Garden'] },
+        
+        // Tamil Nadu
+        'Chennai': { state: 'Tamil Nadu', category: 'heritage', image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220', description: 'Gateway to South India with rich culture', activities: ['Marina Beach', 'Kapaleeshwarar Temple', 'Fort St. George', 'San Thome Cathedral', 'DakshinaChitra'] },
+        'Madurai': { state: 'Tamil Nadu', category: 'pilgrimage', image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220', description: 'Temple city with ancient Dravidian heritage', activities: ['Meenakshi Temple', 'Thirumalai Nayakkar Mahal', 'Gandhi Museum', 'Alagar Hills', 'Banana Market'] },
+        'Coimbatore': { state: 'Tamil Nadu', category: 'nature', image: 'https://images.unsplash.com/photo-1593693411515-c20261bcad6e', description: 'Gateway to Western Ghats & spiritual centers', activities: ['Isha Yoga Center', 'Dhyanalinga', 'Marudamalai Temple', 'Siruvani Waterfalls', 'Vellingiri Hills'] },
+        'Ooty': { state: 'Tamil Nadu', category: 'hill-station', image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa', description: 'Queen of Hill Stations in Nilgiris', activities: ['Ooty Lake', 'Botanical Gardens', 'Toy Train', 'Doddabetta Peak', 'Tea Gardens'] },
+        'Kodaikanal': { state: 'Tamil Nadu', category: 'hill-station', image: 'https://images.unsplash.com/photo-1589308078059-be1415eab4c3', description: 'Princess of Hill Stations', activities: ['Kodai Lake', 'Coakers Walk', 'Pillar Rocks', 'Silver Cascade', 'Bryant Park'] },
+        'Mahabalipuram': { state: 'Tamil Nadu', category: 'heritage', image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220', description: 'UNESCO World Heritage shore temples', activities: ['Shore Temple', 'Pancha Rathas', "Arjuna's Penance", 'Krishna Butter Ball', 'Beach'] },
+        'Rameswaram': { state: 'Tamil Nadu', category: 'pilgrimage', image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220', description: 'Sacred island with Ramanathaswamy Temple', activities: ['Ramanathaswamy Temple', 'Dhanushkodi', 'Pamban Bridge', 'Agni Theertham', 'Abdul Kalam House'] },
+        'Thanjavur': { state: 'Tamil Nadu', category: 'heritage', image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220', description: 'Rice bowl of Tamil Nadu with Brihadeeswara Temple', activities: ['Brihadeeswara Temple', 'Thanjavur Palace', 'Art Gallery', 'Saraswati Mahal Library', 'Royal Museum'] },
+        
+        // Kerala
+        'Munnar': { state: 'Kerala', category: 'hill-station', image: 'https://images.unsplash.com/photo-1549880338-65ddcdfd017b', description: 'Tea gardens in misty hills', activities: ['Tea Gardens', 'Eravikulam National Park', 'Mattupetty Dam', 'Top Station', 'Tea Museum'] },
+        'Alleppey': { state: 'Kerala', category: 'nature', image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944', description: 'Venice of the East with backwaters', activities: ['Houseboat Cruise', 'Alappuzha Beach', 'Pathiramanal Island', 'Krishnapuram Palace', 'Nehru Trophy Boat Race'] },
+        'Kochi': { state: 'Kerala', category: 'heritage', image: 'https://images.unsplash.com/photo-1590050751537-eb45b8c0c9f4', description: 'Queen of Arabian Sea with colonial history', activities: ['Fort Kochi', 'Chinese Fishing Nets', 'Mattancherry Palace', 'Jewish Synagogue', 'Kathakali Show'] },
+        'Thekkady': { state: 'Kerala', category: 'nature', image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa', description: 'Periyar Wildlife Sanctuary', activities: ['Periyar Lake', 'Wildlife Safari', 'Spice Plantations', 'Bamboo Rafting', 'Tribal Village Visit'] },
+        'Wayanad': { state: 'Kerala', category: 'nature', image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa', description: 'Green paradise in Western Ghats', activities: ['Edakkal Caves', 'Chembra Peak', 'Banasura Dam', 'Soochipara Falls', 'Wayanad Wildlife Sanctuary'] },
+        'Kovalam': { state: 'Kerala', category: 'beach', image: 'https://images.unsplash.com/photo-1590050751537-eb45b8c0c9f4', description: 'Crescent beach with lighthouse', activities: ['Lighthouse Beach', 'Hawa Beach', 'Samudra Beach', 'Ayurveda Centers', 'Vizhinjam Rock Cut Cave'] },
+        
+        // Goa
+        'North Goa': { state: 'Goa', category: 'beach', image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2', description: 'Vibrant beaches and nightlife', activities: ['Baga Beach', 'Anjuna Flea Market', 'Fort Aguada', 'Chapora Fort', 'Calangute Beach'] },
+        'South Goa': { state: 'Goa', category: 'beach', image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2', description: 'Serene beaches and Portuguese heritage', activities: ['Colva Beach', 'Palolem Beach', 'Dudhsagar Falls', 'Se Cathedral', 'Basilica of Bom Jesus'] },
+        'Old Goa': { state: 'Goa', category: 'heritage', image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2', description: 'UNESCO heritage churches', activities: ['Basilica of Bom Jesus', 'Se Cathedral', 'Church of St. Francis', 'Archaeological Museum', 'Chapel of St. Catherine'] },
+        
+        // Karnataka
+        'Bangalore': { state: 'Karnataka', category: 'heritage', image: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2', description: 'Silicon Valley of India with gardens', activities: ['Lalbagh', 'Cubbon Park', 'Bangalore Palace', 'ISKCON Temple', 'Nandi Hills'] },
+        'Mysore': { state: 'Karnataka', category: 'heritage', image: 'https://images.unsplash.com/photo-1600100397608-e4fbcbff3e5a', description: 'City of Palaces with royal heritage', activities: ['Mysore Palace', 'Chamundi Hills', 'Brindavan Gardens', 'St. Philomenas Church', 'Mysore Zoo'] },
+        'Hampi': { state: 'Karnataka', category: 'heritage', image: 'https://images.unsplash.com/photo-1600100397608-e4fbcbff3e5a', description: 'UNESCO ruins of Vijayanagara Empire', activities: ['Virupaksha Temple', 'Vittala Temple', 'Elephant Stables', 'Stone Chariot', 'Lotus Mahal'] },
+        'Coorg': { state: 'Karnataka', category: 'hill-station', image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa', description: 'Scotland of India with coffee estates', activities: ['Abbey Falls', 'Raja Seat', 'Coffee Plantations', 'Nagarhole National Park', 'Dubare Elephant Camp'] },
+        
+        // Maharashtra
+        'Mumbai': { state: 'Maharashtra', category: 'heritage', image: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f', description: 'City of Dreams', activities: ['Gateway of India', 'Marine Drive', 'Elephanta Caves', 'Siddhivinayak Temple', 'Colaba Causeway'] },
+        'Pune': { state: 'Maharashtra', category: 'heritage', image: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f', description: 'Oxford of the East with rich history', activities: ['Shaniwar Wada', 'Aga Khan Palace', 'Sinhagad Fort', 'Osho Ashram', 'Dagdusheth Halwai Temple'] },
+        'Aurangabad': { state: 'Maharashtra', category: 'heritage', image: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f', description: 'Gateway to Ajanta and Ellora', activities: ['Ajanta Caves', 'Ellora Caves', 'Bibi Ka Maqbara', 'Daulatabad Fort', 'Panchakki'] },
+        'Mahabaleshwar': { state: 'Maharashtra', category: 'hill-station', image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa', description: 'Hill station with strawberries', activities: ['Venna Lake', 'Pratapgad Fort', "Arthur's Seat", 'Mapro Garden', 'Lingmala Waterfall'] },
+        
+        // Himachal Pradesh
+        'Shimla': { state: 'Himachal Pradesh', category: 'hill-station', image: 'https://images.unsplash.com/photo-1597074866923-dc0589150358', description: 'Queen of Hills with colonial charm', activities: ['Mall Road', 'Ridge', 'Jakhu Temple', 'Christ Church', 'Toy Train'] },
+        'Manali': { state: 'Himachal Pradesh', category: 'adventure', image: 'https://images.unsplash.com/photo-1593181629936-11c609b8db9b', description: 'Adventure capital in Himalayas', activities: ['Rohtang Pass', 'Solang Valley', 'Hadimba Temple', 'Old Manali', 'Beas River Rafting'] },
+        'Dharamshala': { state: 'Himachal Pradesh', category: 'pilgrimage', image: 'https://images.unsplash.com/photo-1597074866923-dc0589150358', description: 'Little Lhasa with Tibetan culture', activities: ['McLeodganj', 'Dalai Lama Temple', 'Bhagsu Waterfall', 'Triund Trek', 'Tibetan Museum'] },
+        
+        // Uttarakhand
+        'Rishikesh': { state: 'Uttarakhand', category: 'adventure', image: 'https://images.unsplash.com/photo-1586439738618-1142c0cec81f', description: 'Yoga capital and adventure hub', activities: ['Lakshman Jhula', 'River Rafting', 'Beatles Ashram', 'Triveni Ghat', 'Bungee Jumping'] },
+        'Haridwar': { state: 'Uttarakhand', category: 'pilgrimage', image: 'https://images.unsplash.com/photo-1586439738618-1142c0cec81f', description: 'Gateway to Gods with sacred ghats', activities: ['Har Ki Pauri', 'Ganga Aarti', 'Mansa Devi Temple', 'Chandi Devi Temple', 'Maya Devi Temple'] },
+        'Nainital': { state: 'Uttarakhand', category: 'hill-station', image: 'https://images.unsplash.com/photo-1589308078059-be1415eab4c3', description: 'Lake District of India', activities: ['Naini Lake', 'Mall Road', 'Snow View Point', 'Naina Devi Temple', 'Eco Cave Gardens'] },
+        
+        // Gujarat
+        'Ahmedabad': { state: 'Gujarat', category: 'heritage', image: 'https://images.unsplash.com/photo-1595658658481-d53d3f999875', description: 'UNESCO World Heritage City', activities: ['Sabarmati Ashram', 'Adalaj Stepwell', 'Sidi Saiyyed Mosque', 'Kankaria Lake', 'Calico Museum'] },
+        'Kutch': { state: 'Gujarat', category: 'nature', image: 'https://images.unsplash.com/photo-1595658658481-d53d3f999875', description: 'White desert and Rann Utsav', activities: ['Rann of Kutch', 'Bhuj', 'Mandvi Beach', 'Dholavira', 'Handicraft Villages'] },
+        
+        // West Bengal
+        'Kolkata': { state: 'West Bengal', category: 'heritage', image: 'https://images.unsplash.com/photo-1558431382-27e303142255', description: 'City of Joy with colonial heritage', activities: ['Victoria Memorial', 'Howrah Bridge', 'Dakshineswar Temple', 'Park Street', 'Indian Museum'] },
+        'Darjeeling': { state: 'West Bengal', category: 'hill-station', image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa', description: 'Queen of Hills with tea estates', activities: ['Tiger Hill', 'Toy Train', 'Tea Gardens', 'Batasia Loop', 'Peace Pagoda'] }
+    };
+    
+    let currentView = 'grid';
+    
+    function renderCities(cities) {
+        const grid = document.getElementById('citiesGrid');
+        const list = document.getElementById('citiesList');
+        const emptyState = document.getElementById('emptyState');
+        
+        const cityEntries = Object.entries(cities);
+        document.getElementById('resultCount').textContent = cityEntries.length;
+        
+        if (cityEntries.length === 0) {
+            grid.classList.add('hidden');
+            list.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            return;
+        }
+        
+        emptyState.classList.add('hidden');
+        
+        // Grid View
+        grid.innerHTML = cityEntries.map(([name, data]) => `
+            <div class="card-payanam overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1" data-aos="fade-up">
+                <div class="relative h-48">
+                    <img src="${data.image}?w=400" alt="${name}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-4 text-white">
+                        <h3 class="text-xl font-bold">${name}</h3>
+                        <p class="text-sm opacity-90">${data.state}</p>
+                    </div>
+                    <span class="absolute top-4 right-4 badge-payanam text-xs capitalize">${data.category.replace('-', ' ')}</span>
+                </div>
+                <div class="p-4">
+                    <p class="text-gray-600 text-sm mb-3">${data.description}</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${data.activities.slice(0, 3).map(a => `<span class="text-xs bg-cream px-2 py-1 rounded-full text-gray-600">${a}</span>`).join('')}
+                        ${data.activities.length > 3 ? `<span class="text-xs text-primary">+${data.activities.length - 3} more</span>` : ''}
+                    </div>
+                    <button onclick="viewCity('${name}')" class="w-full btn-payanam-outline text-sm">
+                        <i class="fas fa-eye mr-2"></i>View Details
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+        // List View
+        list.innerHTML = cityEntries.map(([name, data]) => `
+            <div class="card-payanam p-4 flex gap-4 hover:shadow-lg transition-all">
+                <img src="${data.image}?w=200" alt="${name}" class="w-32 h-24 object-cover rounded-lg flex-shrink-0">
+                <div class="flex-1">
+                    <div class="flex items-start justify-between mb-2">
+                        <div>
+                            <h3 class="text-lg font-bold text-accent">${name}</h3>
+                            <p class="text-sm text-gray-500">${data.state}</p>
+                        </div>
+                        <span class="badge-payanam text-xs capitalize">${data.category.replace('-', ' ')}</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">${data.description}</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex gap-2">
+                            ${data.activities.slice(0, 2).map(a => `<span class="text-xs bg-cream px-2 py-1 rounded-full">${a}</span>`).join('')}
+                        </div>
+                        <button onclick="viewCity('${name}')" class="text-primary hover:text-accent transition-colors text-sm">
+                            View <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        
+        if (currentView === 'grid') {
+            grid.classList.remove('hidden');
+            list.classList.add('hidden');
+        } else {
+            grid.classList.add('hidden');
+            list.classList.remove('hidden');
+        }
+    }
+    
+    function filterCities() {
+        const search = document.getElementById('citySearch').value.toLowerCase();
+        const state = document.getElementById('stateFilter').value;
+        const category = document.getElementById('categoryFilter').value;
+        
+        const filtered = {};
+        Object.entries(indianCities).forEach(([name, data]) => {
+            const matchesSearch = name.toLowerCase().includes(search) || 
+                                  data.state.toLowerCase().includes(search) ||
+                                  data.description.toLowerCase().includes(search) ||
+                                  data.activities.some(a => a.toLowerCase().includes(search));
+            const matchesState = !state || data.state === state;
+            const matchesCategory = !category || data.category === category;
+            
+            if (matchesSearch && matchesState && matchesCategory) {
+                filtered[name] = data;
+            }
+        });
+        
+        renderCities(filtered);
+    }
+    
+    function setView(view) {
+        currentView = view;
+        document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active', 'bg-primary', 'text-white'));
+        document.getElementById(view + 'Btn').classList.add('active', 'bg-primary', 'text-white');
+        filterCities();
+    }
+    
+    function viewCity(cityName) {
+        const city = indianCities[cityName];
+        // Show city details modal
+        const modalHtml = `
+            <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" id="cityModal" onclick="if(event.target === this) this.remove()">
+                <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="relative h-64">
+                        <img src="${city.image}?w=800" alt="${cityName}" class="w-full h-full object-cover">
+                        <button onclick="document.getElementById('cityModal').remove()" class="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent text-white">
+                            <span class="badge-payanam text-xs capitalize mb-2 inline-block">${city.category.replace('-', ' ')}</span>
+                            <h2 class="text-3xl font-bold font-playfair">${cityName}</h2>
+                            <p class="opacity-90">${city.state}</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-6">${city.description}</p>
+                        <h3 class="font-bold text-accent mb-4"><i class="fas fa-star text-primary mr-2"></i>Top Activities</h3>
+                        <div class="grid grid-cols-2 gap-3 mb-6">
+                            ${city.activities.map(a => `
+                                <div class="flex items-center gap-3 p-3 bg-cream rounded-lg">
+                                    <i class="fas fa-check-circle text-green-500"></i>
+                                    <span class="text-sm">${a}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <a href="/trip/create" class="btn-payanam w-full text-center block no-underline">
+                            <i class="fas fa-plus mr-2"></i>Plan a Trip to ${cityName}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+    
+    // Event Listeners
+    document.getElementById('citySearch').addEventListener('input', filterCities);
+    document.getElementById('stateFilter').addEventListener('change', filterCities);
+    document.getElementById('categoryFilter').addEventListener('change', filterCities);
+    
+    // Initial load
+    renderCities(indianCities);
+</script>
+{% endblock %}

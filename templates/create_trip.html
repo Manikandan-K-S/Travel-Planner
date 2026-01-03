@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+
+{% block title %}Create New Trip - Payanam{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-3xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8" data-aos="fade-up">
+            <div class="w-16 h-16 gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-plane-departure text-white text-2xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold font-playfair text-accent mb-2">Create New Trip</h1>
+            <p class="text-gray-600">Let's start planning your Indian adventure!</p>
+        </div>
+        
+        <!-- Form -->
+        <div class="card-payanam p-8" data-aos="fade-up" data-aos-delay="100">
+            <form method="POST" action="{{ url_for('create_trip') }}" id="createTripForm">
+                <!-- Trip Name -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-2">
+                        <i class="fas fa-heading text-primary mr-2"></i>Trip Name *
+                    </label>
+                    <input type="text" name="trip_name" required 
+                           class="input-payanam w-full"
+                           placeholder="e.g., Rajasthan Heritage Tour, Tamil Nadu Temple Trail"
+                           id="trip_name"
+                           minlength="3"
+                           maxlength="200">
+                    <span class="text-red-500 text-sm hidden" id="tripNameError"></span>
+                </div>
+                
+                <!-- Trip Description -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-2">
+                        <i class="fas fa-align-left text-primary mr-2"></i>Description
+                    </label>
+                    <textarea name="trip_description" 
+                              class="input-payanam w-full h-32 resize-none"
+                              placeholder="Describe your trip plans, goals, or notes..."
+                              id="trip_description"
+                              maxlength="1000"></textarea>
+                    <div class="text-right text-sm text-gray-400 mt-1">
+                        <span id="descCharCount">0</span>/1000
+                    </div>
+                </div>
+                
+                <!-- Trip Category -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-2">
+                        <i class="fas fa-tag text-primary mr-2"></i>Trip Category *
+                    </label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <label class="category-option cursor-pointer">
+                            <input type="radio" name="trip_category" value="family" class="hidden" checked>
+                            <div class="border-2 border-gray-200 rounded-xl p-4 text-center hover:border-primary transition category-card">
+                                <div class="text-3xl mb-2">👨‍👩‍👧‍👦</div>
+                                <div class="font-medium">Family</div>
+                            </div>
+                        </label>
+                        <label class="category-option cursor-pointer">
+                            <input type="radio" name="trip_category" value="heritage" class="hidden">
+                            <div class="border-2 border-gray-200 rounded-xl p-4 text-center hover:border-primary transition category-card">
+                                <div class="text-3xl mb-2">🏰</div>
+                                <div class="font-medium">Heritage</div>
+                            </div>
+                        </label>
+                        <label class="category-option cursor-pointer">
+                            <input type="radio" name="trip_category" value="budget" class="hidden">
+                            <div class="border-2 border-gray-200 rounded-xl p-4 text-center hover:border-primary transition category-card">
+                                <div class="text-3xl mb-2">💰</div>
+                                <div class="font-medium">Budget</div>
+                            </div>
+                        </label>
+                        <label class="category-option cursor-pointer">
+                            <input type="radio" name="trip_category" value="leisure" class="hidden">
+                            <div class="border-2 border-gray-200 rounded-xl p-4 text-center hover:border-primary transition category-card">
+                                <div class="text-3xl mb-2">🌴</div>
+                                <div class="font-medium">Leisure</div>
+                            </div>
+                        </label>
+                        <label class="category-option cursor-pointer">
+                            <input type="radio" name="trip_category" value="adventure" class="hidden">
+                            <div class="border-2 border-gray-200 rounded-xl p-4 text-center hover:border-primary transition category-card">
+                                <div class="text-3xl mb-2">🏔️</div>
+                                <div class="font-medium">Adventure</div>
+                            </div>
+                        </label>
+                        <label class="category-option cursor-pointer">
+                            <input type="radio" name="trip_category" value="spiritual" class="hidden">
+                            <div class="border-2 border-gray-200 rounded-xl p-4 text-center hover:border-primary transition category-card">
+                                <div class="text-3xl mb-2">🛕</div>
+                                <div class="font-medium">Spiritual</div>
+                            </div>
+                        </label>
+                        <label class="category-option cursor-pointer">
+                            <input type="radio" name="trip_category" value="romantic" class="hidden">
+                            <div class="border-2 border-gray-200 rounded-xl p-4 text-center hover:border-primary transition category-card">
+                                <div class="text-3xl mb-2">💑</div>
+                                <div class="font-medium">Romantic</div>
+                            </div>
+                        </label>
+                        <label class="category-option cursor-pointer">
+                            <input type="radio" name="trip_category" value="solo" class="hidden">
+                            <div class="border-2 border-gray-200 rounded-xl p-4 text-center hover:border-primary transition category-card">
+                                <div class="text-3xl mb-2">🎒</div>
+                                <div class="font-medium">Solo</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Dates -->
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">
+                            <i class="fas fa-calendar-plus text-primary mr-2"></i>Start Date *
+                        </label>
+                        <input type="date" name="start_date" required 
+                               class="input-payanam w-full"
+                               id="start_date">
+                        <span class="text-red-500 text-sm hidden" id="startDateError"></span>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">
+                            <i class="fas fa-calendar-check text-primary mr-2"></i>End Date *
+                        </label>
+                        <input type="date" name="end_date" required 
+                               class="input-payanam w-full"
+                               id="end_date">
+                        <span class="text-red-500 text-sm hidden" id="endDateError"></span>
+                    </div>
+                </div>
+                
+                <!-- Trip Duration Display -->
+                <div class="mb-6 p-4 bg-cream rounded-xl hidden" id="tripDuration">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center">
+                            <i class="fas fa-clock text-white"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500">Trip Duration</div>
+                            <div class="font-bold text-accent" id="durationText">0 days</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cover Image -->
+                <div class="mb-8">
+                    <label class="block text-gray-700 font-medium mb-2">
+                        <i class="fas fa-image text-primary mr-2"></i>Cover Image URL (Optional)
+                    </label>
+                    <input type="url" name="cover_image" 
+                           class="input-payanam w-full"
+                           placeholder="https://example.com/image.jpg"
+                           id="cover_image">
+                    <p class="text-sm text-gray-400 mt-1">Add a cover image URL to personalize your trip</p>
+                    
+                    <!-- Image Preview -->
+                    <div class="mt-4 hidden" id="imagePreview">
+                        <img src="" alt="Preview" class="w-full h-48 object-cover rounded-xl" id="previewImg">
+                    </div>
+                </div>
+                
+                <!-- Submit Buttons -->
+                <div class="flex gap-4">
+                    <button type="submit" class="btn-payanam flex-1 text-lg py-4">
+                        <i class="fas fa-rocket mr-2"></i>Create Trip
+                    </button>
+                    <a href="{{ url_for('dashboard') }}" class="btn-payanam-outline flex-1 text-lg py-4 text-center no-underline">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Tips Section -->
+        <div class="mt-8 card-payanam p-6" data-aos="fade-up" data-aos-delay="200">
+            <h3 class="font-bold text-accent mb-4">
+                <i class="fas fa-lightbulb text-primary mr-2"></i>Quick Tips
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-600">
+                <div class="flex items-start gap-2">
+                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                    <span>Choose a descriptive trip name that captures the essence of your journey</span>
+                </div>
+                <div class="flex items-start gap-2">
+                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                    <span>Select the right category to help organize your trips</span>
+                </div>
+                <div class="flex items-start gap-2">
+                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                    <span>You can always edit trip details later</span>
+                </div>
+                <div class="flex items-start gap-2">
+                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                    <span>Add cities and activities in the itinerary builder</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+    .category-option input:checked + .category-card {
+        border-color: var(--primary);
+        background: linear-gradient(135deg, rgba(234, 123, 123, 0.1) 0%, rgba(210, 83, 83, 0.1) 100%);
+    }
+</style>
+
+<script>
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('start_date').setAttribute('min', today);
+    document.getElementById('end_date').setAttribute('min', today);
+    
+    // Description character counter
+    document.getElementById('trip_description').addEventListener('input', function() {
+        document.getElementById('descCharCount').textContent = this.value.length;
+    });
+    
+    // Date validation and duration calculation
+    document.getElementById('start_date').addEventListener('change', updateDuration);
+    document.getElementById('end_date').addEventListener('change', updateDuration);
+    
+    function updateDuration() {
+        const startDate = document.getElementById('start_date').value;
+        const endDate = document.getElementById('end_date').value;
+        
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const diffTime = end - start;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            
+            if (diffDays >= 1) {
+                document.getElementById('tripDuration').classList.remove('hidden');
+                document.getElementById('durationText').textContent = diffDays + (diffDays === 1 ? ' day' : ' days');
+            } else {
+                document.getElementById('tripDuration').classList.add('hidden');
+            }
+        }
+    }
+    
+    // Image preview
+    document.getElementById('cover_image').addEventListener('input', function() {
+        const url = this.value;
+        const preview = document.getElementById('imagePreview');
+        const img = document.getElementById('previewImg');
+        
+        if (url) {
+            img.src = url;
+            img.onload = function() {
+                preview.classList.remove('hidden');
+            };
+            img.onerror = function() {
+                preview.classList.add('hidden');
+            };
+        } else {
+            preview.classList.add('hidden');
+        }
+    });
+    
+    // Form validation
+    document.getElementById('createTripForm').addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        const tripName = document.getElementById('trip_name');
+        const tripNameError = document.getElementById('tripNameError');
+        const startDate = document.getElementById('start_date');
+        const startDateError = document.getElementById('startDateError');
+        const endDate = document.getElementById('end_date');
+        const endDateError = document.getElementById('endDateError');
+        
+        // Trip name validation
+        if (tripName.value.trim().length < 3) {
+            tripNameError.textContent = 'Trip name must be at least 3 characters';
+            tripNameError.classList.remove('hidden');
+            tripName.classList.add('border-red-500');
+            isValid = false;
+        } else {
+            tripNameError.classList.add('hidden');
+            tripName.classList.remove('border-red-500');
+        }
+        
+        // Date validations
+        const start = new Date(startDate.value);
+        const end = new Date(endDate.value);
+        const todayDate = new Date();
+        todayDate.setHours(0, 0, 0, 0);
+        
+        if (start < todayDate) {
+            startDateError.textContent = 'Start date cannot be in the past';
+            startDateError.classList.remove('hidden');
+            startDate.classList.add('border-red-500');
+            isValid = false;
+        } else {
+            startDateError.classList.add('hidden');
+            startDate.classList.remove('border-red-500');
+        }
+        
+        if (end < start) {
+            endDateError.textContent = 'End date must be after start date';
+            endDateError.classList.remove('hidden');
+            endDate.classList.add('border-red-500');
+            isValid = false;
+        } else {
+            endDateError.classList.add('hidden');
+            endDate.classList.remove('border-red-500');
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}

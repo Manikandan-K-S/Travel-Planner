@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+
+{% block title %}Explore Activities - Payanam{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-12" data-aos="fade-up">
+        <h1 class="text-4xl font-bold text-accent font-playfair mb-4">Discover Activities</h1>
+        <p class="text-gray-600 max-w-2xl mx-auto">Find exciting experiences across India - from temple visits to adventure sports</p>
+    </div>
+    
+    <!-- Search & Filters -->
+    <div class="card-payanam p-6 mb-8" data-aos="fade-up">
+        <div class="flex flex-col md:flex-row gap-4">
+            <!-- Search -->
+            <div class="flex-1 relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="activitySearch" class="input-payanam w-full pl-12" 
+                       placeholder="Search activities...">
+            </div>
+            
+            <!-- Type Filter -->
+            <select id="typeFilter" class="input-payanam md:w-48">
+                <option value="">All Types</option>
+                <option value="sightseeing">Sightseeing</option>
+                <option value="temple">Temple Visit</option>
+                <option value="adventure">Adventure</option>
+                <option value="nature">Nature</option>
+                <option value="food">Food & Dining</option>
+                <option value="shopping">Shopping</option>
+                <option value="beach">Beach</option>
+                <option value="heritage">Heritage</option>
+            </select>
+            
+            <!-- City Filter -->
+            <select id="cityFilter" class="input-payanam md:w-48">
+                <option value="">All Cities</option>
+            </select>
+        </div>
+    </div>
+    
+    <!-- Category Pills -->
+    <div class="flex flex-wrap gap-3 mb-8" data-aos="fade-up">
+        <button onclick="filterByType('')" class="category-pill active" data-type="">
+            <i class="fas fa-globe mr-2"></i>All
+        </button>
+        <button onclick="filterByType('temple')" class="category-pill" data-type="temple">
+            <i class="fas fa-om mr-2"></i>Temples
+        </button>
+        <button onclick="filterByType('heritage')" class="category-pill" data-type="heritage">
+            <i class="fas fa-landmark mr-2"></i>Heritage
+        </button>
+        <button onclick="filterByType('adventure')" class="category-pill" data-type="adventure">
+            <i class="fas fa-hiking mr-2"></i>Adventure
+        </button>
+        <button onclick="filterByType('nature')" class="category-pill" data-type="nature">
+            <i class="fas fa-leaf mr-2"></i>Nature
+        </button>
+        <button onclick="filterByType('beach')" class="category-pill" data-type="beach">
+            <i class="fas fa-umbrella-beach mr-2"></i>Beach
+        </button>
+        <button onclick="filterByType('food')" class="category-pill" data-type="food">
+            <i class="fas fa-utensils mr-2"></i>Food
+        </button>
+    </div>
+    
+    <!-- Results Count -->
+    <div class="flex items-center justify-between mb-6" data-aos="fade-up">
+        <p class="text-gray-600"><span id="resultCount">0</span> activities found</p>
+    </div>
+    
+    <!-- Activities Grid -->
+    <div id="activitiesGrid" class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Activities will be loaded here -->
+    </div>
+    
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-16">
+        <div class="w-24 h-24 gradient-cream rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-search text-primary text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-bold text-accent mb-2">No activities found</h3>
+        <p class="text-gray-500">Try adjusting your search or filters</p>
+    </div>
+</div>
+
+<style>
+    .category-pill {
+        @apply px-4 py-2 rounded-full border-2 border-gray-200 text-gray-600 transition-all hover:border-primary hover:text-primary;
+    }
+    .category-pill.active {
+        @apply border-primary bg-primary text-white;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Comprehensive activities database
+    const activities = [
+        // Rajasthan
+        { name: 'Amber Fort', city: 'Jaipur', state: 'Rajasthan', type: 'heritage', duration: '3 hours', cost: 500, description: 'Magnificent hilltop fort with stunning architecture' },
+        { name: 'Hawa Mahal', city: 'Jaipur', state: 'Rajasthan', type: 'heritage', duration: '1 hour', cost: 200, description: 'Palace of Winds with 953 small windows' },
+        { name: 'City Palace Jaipur', city: 'Jaipur', state: 'Rajasthan', type: 'heritage', duration: '2 hours', cost: 500, description: 'Royal residence with museums and courtyards' },
+        { name: 'Nahargarh Fort', city: 'Jaipur', state: 'Rajasthan', type: 'heritage', duration: '2 hours', cost: 200, description: 'Fort with panoramic views of Jaipur' },
+        { name: 'Lake Pichola Boat Ride', city: 'Udaipur', state: 'Rajasthan', type: 'sightseeing', duration: '1 hour', cost: 400, description: 'Scenic boat ride on the famous lake' },
+        { name: 'City Palace Udaipur', city: 'Udaipur', state: 'Rajasthan', type: 'heritage', duration: '3 hours', cost: 300, description: 'Largest palace complex in Rajasthan' },
+        { name: 'Mehrangarh Fort', city: 'Jodhpur', state: 'Rajasthan', type: 'heritage', duration: '3 hours', cost: 600, description: 'One of the largest forts in India' },
+        { name: 'Blue City Walking Tour', city: 'Jodhpur', state: 'Rajasthan', type: 'sightseeing', duration: '2 hours', cost: 0, description: 'Explore the iconic blue-painted houses' },
+        { name: 'Desert Safari', city: 'Jaisalmer', state: 'Rajasthan', type: 'adventure', duration: '4 hours', cost: 2000, description: 'Camel safari in Sam Sand Dunes' },
+        { name: 'Jaisalmer Fort', city: 'Jaisalmer', state: 'Rajasthan', type: 'heritage', duration: '2 hours', cost: 100, description: 'Living fort with shops and temples' },
+        { name: 'Brahma Temple Visit', city: 'Pushkar', state: 'Rajasthan', type: 'temple', duration: '1 hour', cost: 0, description: 'One of the few Brahma temples in the world' },
+        
+        // Tamil Nadu
+        { name: 'Meenakshi Temple', city: 'Madurai', state: 'Tamil Nadu', type: 'temple', duration: '2 hours', cost: 0, description: 'Historic Hindu temple with 14 gateway towers' },
+        { name: 'Marina Beach Walk', city: 'Chennai', state: 'Tamil Nadu', type: 'beach', duration: '2 hours', cost: 0, description: 'One of the longest urban beaches in the world' },
+        { name: 'Kapaleeshwarar Temple', city: 'Chennai', state: 'Tamil Nadu', type: 'temple', duration: '1 hour', cost: 0, description: 'Ancient Shiva temple in Dravidian style' },
+        { name: 'Isha Yoga Center', city: 'Coimbatore', state: 'Tamil Nadu', type: 'temple', duration: '4 hours', cost: 0, description: 'Spiritual center with Dhyanalinga and Linga Bhairavi' },
+        { name: 'Dhyanalinga Meditation', city: 'Coimbatore', state: 'Tamil Nadu', type: 'temple', duration: '2 hours', cost: 0, description: 'Powerful meditation space with unique energy' },
+        { name: 'Marudamalai Temple', city: 'Coimbatore', state: 'Tamil Nadu', type: 'temple', duration: '2 hours', cost: 0, description: 'Hill temple dedicated to Lord Murugan' },
+        { name: 'Siruvani Waterfalls', city: 'Coimbatore', state: 'Tamil Nadu', type: 'nature', duration: '3 hours', cost: 50, description: 'Scenic waterfalls with pristine waters' },
+        { name: 'Ooty Lake Boating', city: 'Ooty', state: 'Tamil Nadu', type: 'nature', duration: '1 hour', cost: 200, description: 'Boating on the scenic artificial lake' },
+        { name: 'Nilgiri Toy Train', city: 'Ooty', state: 'Tamil Nadu', type: 'sightseeing', duration: '5 hours', cost: 300, description: 'UNESCO World Heritage mountain railway' },
+        { name: 'Botanical Gardens', city: 'Ooty', state: 'Tamil Nadu', type: 'nature', duration: '2 hours', cost: 60, description: 'Beautiful gardens with exotic plants' },
+        { name: 'Kodai Lake Walk', city: 'Kodaikanal', state: 'Tamil Nadu', type: 'nature', duration: '2 hours', cost: 0, description: 'Star-shaped lake surrounded by hills' },
+        { name: 'Shore Temple Visit', city: 'Mahabalipuram', state: 'Tamil Nadu', type: 'heritage', duration: '1 hour', cost: 40, description: 'UNESCO World Heritage temple complex' },
+        { name: 'Ramanathaswamy Temple', city: 'Rameswaram', state: 'Tamil Nadu', type: 'temple', duration: '2 hours', cost: 0, description: 'Sacred temple with longest corridor in India' },
+        { name: 'Brihadeeswara Temple', city: 'Thanjavur', state: 'Tamil Nadu', type: 'temple', duration: '2 hours', cost: 0, description: 'UNESCO World Heritage Chola temple' },
+        
+        // Kerala
+        { name: 'Houseboat Cruise', city: 'Alleppey', state: 'Kerala', type: 'nature', duration: '12 hours', cost: 8000, description: 'Overnight backwater cruise on traditional houseboat' },
+        { name: 'Chinese Fishing Nets', city: 'Kochi', state: 'Kerala', type: 'sightseeing', duration: '1 hour', cost: 0, description: 'Iconic fishing nets of Fort Kochi' },
+        { name: 'Kathakali Show', city: 'Kochi', state: 'Kerala', type: 'sightseeing', duration: '2 hours', cost: 350, description: 'Traditional Kerala classical dance performance' },
+        { name: 'Periyar Lake Safari', city: 'Thekkady', state: 'Kerala', type: 'nature', duration: '2 hours', cost: 300, description: 'Boat safari in Periyar Wildlife Sanctuary' },
+        { name: 'Spice Plantation Tour', city: 'Thekkady', state: 'Kerala', type: 'nature', duration: '2 hours', cost: 500, description: 'Walk through aromatic spice gardens' },
+        { name: 'Tea Garden Visit', city: 'Munnar', state: 'Kerala', type: 'nature', duration: '3 hours', cost: 200, description: 'Explore lush green tea estates' },
+        { name: 'Eravikulam National Park', city: 'Munnar', state: 'Kerala', type: 'nature', duration: '3 hours', cost: 175, description: 'Wildlife sanctuary with Nilgiri Tahr' },
+        { name: 'Chembra Peak Trek', city: 'Wayanad', state: 'Kerala', type: 'adventure', duration: '6 hours', cost: 750, description: 'Trek to heart-shaped lake on hilltop' },
+        { name: 'Lighthouse Beach', city: 'Kovalam', state: 'Kerala', type: 'beach', duration: '3 hours', cost: 0, description: 'Iconic crescent beach with lighthouse' },
+        { name: 'Ayurvedic Massage', city: 'Kovalam', state: 'Kerala', type: 'sightseeing', duration: '2 hours', cost: 2000, description: 'Traditional Kerala ayurvedic treatment' },
+        
+        // Goa
+        { name: 'Baga Beach', city: 'North Goa', state: 'Goa', type: 'beach', duration: '4 hours', cost: 0, description: 'Popular beach with water sports and shacks' },
+        { name: 'Fort Aguada Visit', city: 'North Goa', state: 'Goa', type: 'heritage', duration: '2 hours', cost: 0, description: '17th century Portuguese fort with lighthouse' },
+        { name: 'Anjuna Flea Market', city: 'North Goa', state: 'Goa', type: 'shopping', duration: '3 hours', cost: 0, description: 'Famous Wednesday flea market' },
+        { name: 'Palolem Beach', city: 'South Goa', state: 'Goa', type: 'beach', duration: '4 hours', cost: 0, description: 'Crescent-shaped beach with calm waters' },
+        { name: 'Dudhsagar Falls Trip', city: 'South Goa', state: 'Goa', type: 'nature', duration: '6 hours', cost: 2500, description: 'Four-tiered waterfall in the jungle' },
+        { name: 'Basilica of Bom Jesus', city: 'Old Goa', state: 'Goa', type: 'heritage', duration: '1 hour', cost: 0, description: 'UNESCO World Heritage Church' },
+        
+        // Karnataka
+        { name: 'Mysore Palace', city: 'Mysore', state: 'Karnataka', type: 'heritage', duration: '2 hours', cost: 70, description: 'Grand palace with Indo-Saracenic architecture' },
+        { name: 'Chamundi Hills', city: 'Mysore', state: 'Karnataka', type: 'temple', duration: '2 hours', cost: 0, description: 'Hill temple with giant Nandi statue' },
+        { name: 'Virupaksha Temple', city: 'Hampi', state: 'Karnataka', type: 'temple', duration: '1 hour', cost: 0, description: 'Ancient temple in UNESCO World Heritage site' },
+        { name: 'Stone Chariot Visit', city: 'Hampi', state: 'Karnataka', type: 'heritage', duration: '2 hours', cost: 40, description: 'Iconic stone chariot at Vittala Temple' },
+        { name: 'Coffee Plantation Tour', city: 'Coorg', state: 'Karnataka', type: 'nature', duration: '3 hours', cost: 500, description: 'Walk through aromatic coffee estates' },
+        { name: 'Abbey Falls', city: 'Coorg', state: 'Karnataka', type: 'nature', duration: '2 hours', cost: 15, description: 'Scenic waterfall amidst coffee plantations' },
+        { name: 'Lalbagh Botanical Garden', city: 'Bangalore', state: 'Karnataka', type: 'nature', duration: '2 hours', cost: 25, description: 'Historic garden with glasshouse' },
+        { name: 'Nandi Hills Sunrise', city: 'Bangalore', state: 'Karnataka', type: 'sightseeing', duration: '4 hours', cost: 0, description: 'Sunrise view from ancient hill fortress' },
+        
+        // Maharashtra
+        { name: 'Gateway of India', city: 'Mumbai', state: 'Maharashtra', type: 'heritage', duration: '1 hour', cost: 0, description: 'Iconic arch monument overlooking Arabian Sea' },
+        { name: 'Elephanta Caves', city: 'Mumbai', state: 'Maharashtra', type: 'heritage', duration: '4 hours', cost: 600, description: 'UNESCO World Heritage rock-cut temples' },
+        { name: 'Marine Drive Walk', city: 'Mumbai', state: 'Maharashtra', type: 'sightseeing', duration: '1 hour', cost: 0, description: 'Scenic promenade along the coast' },
+        { name: 'Ajanta Caves', city: 'Aurangabad', state: 'Maharashtra', type: 'heritage', duration: '4 hours', cost: 600, description: 'UNESCO World Heritage Buddhist caves' },
+        { name: 'Ellora Caves', city: 'Aurangabad', state: 'Maharashtra', type: 'heritage', duration: '4 hours', cost: 600, description: 'UNESCO World Heritage rock-cut temples' },
+        { name: 'Shaniwar Wada', city: 'Pune', state: 'Maharashtra', type: 'heritage', duration: '2 hours', cost: 25, description: 'Historic fortification of the Peshwas' },
+        
+        // Himachal Pradesh
+        { name: 'Mall Road Walk', city: 'Shimla', state: 'Himachal Pradesh', type: 'sightseeing', duration: '2 hours', cost: 0, description: 'Main shopping and walking street' },
+        { name: 'Toy Train Ride', city: 'Shimla', state: 'Himachal Pradesh', type: 'sightseeing', duration: '5 hours', cost: 500, description: 'UNESCO World Heritage mountain railway' },
+        { name: 'Rohtang Pass', city: 'Manali', state: 'Himachal Pradesh', type: 'adventure', duration: '6 hours', cost: 800, description: 'High altitude pass with snow activities' },
+        { name: 'Solang Valley Activities', city: 'Manali', state: 'Himachal Pradesh', type: 'adventure', duration: '4 hours', cost: 1500, description: 'Paragliding, zorbing, and snow sports' },
+        { name: 'River Rafting', city: 'Manali', state: 'Himachal Pradesh', type: 'adventure', duration: '2 hours', cost: 1000, description: 'White water rafting in Beas River' },
+        { name: 'Triund Trek', city: 'Dharamshala', state: 'Himachal Pradesh', type: 'adventure', duration: '8 hours', cost: 500, description: 'Trek to scenic meadow with mountain views' },
+        { name: 'Dalai Lama Temple', city: 'Dharamshala', state: 'Himachal Pradesh', type: 'temple', duration: '2 hours', cost: 0, description: 'Tibetan Buddhist monastery complex' },
+        
+        // Uttarakhand
+        { name: 'Ganga Aarti', city: 'Rishikesh', state: 'Uttarakhand', type: 'temple', duration: '1 hour', cost: 0, description: 'Evening prayer ceremony at Triveni Ghat' },
+        { name: 'White Water Rafting', city: 'Rishikesh', state: 'Uttarakhand', type: 'adventure', duration: '3 hours', cost: 1500, description: 'Exciting rafting in the Ganges' },
+        { name: 'Bungee Jumping', city: 'Rishikesh', state: 'Uttarakhand', type: 'adventure', duration: '2 hours', cost: 3500, description: 'Indias highest bungee jumping' },
+        { name: 'Beatles Ashram', city: 'Rishikesh', state: 'Uttarakhand', type: 'heritage', duration: '2 hours', cost: 150, description: 'Abandoned ashram with colorful graffiti' },
+        { name: 'Har Ki Pauri Aarti', city: 'Haridwar', state: 'Uttarakhand', type: 'temple', duration: '1 hour', cost: 0, description: 'Grand evening aarti ceremony' },
+        { name: 'Naini Lake Boating', city: 'Nainital', state: 'Uttarakhand', type: 'nature', duration: '1 hour', cost: 200, description: 'Peaceful boating on the eye-shaped lake' },
+        { name: 'Snow View Cable Car', city: 'Nainital', state: 'Uttarakhand', type: 'sightseeing', duration: '1 hour', cost: 300, description: 'Cable car ride with Himalayan views' },
+        
+        // Food Experiences
+        { name: 'Dal Baati Churma', city: 'Jaipur', state: 'Rajasthan', type: 'food', duration: '1 hour', cost: 300, description: 'Traditional Rajasthani thali experience' },
+        { name: 'Chettinad Cuisine', city: 'Chennai', state: 'Tamil Nadu', type: 'food', duration: '1 hour', cost: 500, description: 'Spicy South Indian cuisine tasting' },
+        { name: 'Kerala Sadhya', city: 'Kochi', state: 'Kerala', type: 'food', duration: '1 hour', cost: 400, description: 'Traditional banana leaf feast' },
+        { name: 'Goan Fish Curry', city: 'North Goa', state: 'Goa', type: 'food', duration: '1 hour', cost: 500, description: 'Seafood feast at beach shack' },
+        { name: 'Mysore Dosa', city: 'Mysore', state: 'Karnataka', type: 'food', duration: '1 hour', cost: 150, description: 'Famous Mysore masala dosa' },
+        { name: 'Mumbai Street Food Tour', city: 'Mumbai', state: 'Maharashtra', type: 'food', duration: '3 hours', cost: 500, description: 'Vada pav, pav bhaji, and more' }
+    ];
+    
+    // Populate city filter
+    const cities = [...new Set(activities.map(a => a.city))].sort();
+    const cityFilter = document.getElementById('cityFilter');
+    cities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        cityFilter.appendChild(option);
+    });
+    
+    function renderActivities(filteredActivities) {
+        const grid = document.getElementById('activitiesGrid');
+        const emptyState = document.getElementById('emptyState');
+        
+        document.getElementById('resultCount').textContent = filteredActivities.length;
+        
+        if (filteredActivities.length === 0) {
+            grid.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            return;
+        }
+        
+        emptyState.classList.add('hidden');
+        grid.classList.remove('hidden');
+        
+        const typeIcons = {
+            'sightseeing': 'fa-camera',
+            'temple': 'fa-om',
+            'adventure': 'fa-hiking',
+            'nature': 'fa-leaf',
+            'food': 'fa-utensils',
+            'shopping': 'fa-shopping-bag',
+            'beach': 'fa-umbrella-beach',
+            'heritage': 'fa-landmark'
+        };
+        
+        const typeColors = {
+            'sightseeing': 'bg-blue-500',
+            'temple': 'bg-orange-500',
+            'adventure': 'bg-red-500',
+            'nature': 'bg-green-500',
+            'food': 'bg-yellow-500',
+            'shopping': 'bg-pink-500',
+            'beach': 'bg-cyan-500',
+            'heritage': 'bg-purple-500'
+        };
+        
+        grid.innerHTML = filteredActivities.map(activity => `
+            <div class="card-payanam p-5 hover:shadow-xl transition-all duration-300 hover:-translate-y-1" data-aos="fade-up">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="w-12 h-12 ${typeColors[activity.type]} rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas ${typeIcons[activity.type]} text-white text-lg"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-bold text-accent truncate">${activity.name}</h3>
+                        <p class="text-sm text-gray-500">${activity.city}, ${activity.state}</p>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mb-4 line-clamp-2">${activity.description}</p>
+                <div class="flex items-center justify-between text-sm">
+                    <div class="flex items-center gap-3 text-gray-500">
+                        <span><i class="far fa-clock mr-1"></i>${activity.duration}</span>
+                        <span><i class="fas fa-rupee-sign mr-1"></i>${activity.cost === 0 ? 'Free' : activity.cost}</span>
+                    </div>
+                    <span class="badge-payanam text-xs capitalize">${activity.type}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    function filterActivities() {
+        const search = document.getElementById('activitySearch').value.toLowerCase();
+        const type = document.getElementById('typeFilter').value;
+        const city = document.getElementById('cityFilter').value;
+        
+        const filtered = activities.filter(activity => {
+            const matchesSearch = activity.name.toLowerCase().includes(search) || 
+                                  activity.description.toLowerCase().includes(search) ||
+                                  activity.city.toLowerCase().includes(search) ||
+                                  activity.state.toLowerCase().includes(search);
+            const matchesType = !type || activity.type === type;
+            const matchesCity = !city || activity.city === city;
+            
+            return matchesSearch && matchesType && matchesCity;
+        });
+        
+        renderActivities(filtered);
+    }
+    
+    function filterByType(type) {
+        document.getElementById('typeFilter').value = type;
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.classList.toggle('active', pill.dataset.type === type);
+            pill.classList.toggle('bg-primary', pill.dataset.type === type);
+            pill.classList.toggle('text-white', pill.dataset.type === type);
+            pill.classList.toggle('border-primary', pill.dataset.type === type);
+        });
+        filterActivities();
+    }
+    
+    // Event Listeners
+    document.getElementById('activitySearch').addEventListener('input', filterActivities);
+    document.getElementById('typeFilter').addEventListener('change', function() {
+        filterByType(this.value);
+    });
+    document.getElementById('cityFilter').addEventListener('change', filterActivities);
+    
+    // Initial load
+    renderActivities(activities);
+</script>
+{% endblock %}

@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ trip.trip_name }} - Timeline - Payanam{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-12" data-aos="fade-up">
+        <div class="inline-flex items-center gap-2 bg-cream px-4 py-2 rounded-full mb-4">
+            <span class="capitalize">{{ trip.trip_category }}</span>
+        </div>
+        <h1 class="text-4xl font-bold font-playfair text-accent mb-2">{{ trip.trip_name }}</h1>
+        <p class="text-gray-500">{{ trip.start_date }} - {{ trip.end_date }}</p>
+        
+        <div class="flex justify-center gap-4 mt-6">
+            <a href="{{ url_for('itinerary_builder', trip_id=trip.trip_id) }}" class="btn-payanam-outline no-underline">
+                <i class="fas fa-edit mr-2"></i>Edit Itinerary
+            </a>
+            <a href="{{ url_for('trip_budget', trip_id=trip.trip_id) }}" class="btn-payanam no-underline">
+                <i class="fas fa-rupee-sign mr-2"></i>View Budget
+            </a>
+            <button onclick="shareTrip()" class="btn-payanam-outline">
+                <i class="fas fa-share-alt mr-2"></i>Share
+            </button>
+        </div>
+    </div>
+    
+    {% set itinerary = trip.get_itinerary() %}
+    
+    {% if itinerary.stops %}
+    <!-- Timeline -->
+    <div class="max-w-4xl mx-auto">
+        {% for stop in itinerary.stops %}
+        <div class="relative mb-12" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+            <!-- Timeline Line -->
+            {% if not loop.last %}
+            <div class="absolute left-8 top-20 bottom-0 w-1 bg-gradient-to-b from-primary to-secondary"></div>
+            {% endif %}
+            
+            <!-- City Header -->
+            <div class="flex items-start gap-6">
+                <div class="w-16 h-16 gradient-primary rounded-full flex items-center justify-center text-white text-xl font-bold shadow-lg z-10">
+                    {{ loop.index }}
+                </div>
+                <div class="flex-1">
+                    <div class="card-payanam p-6 mb-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h2 class="text-2xl font-bold font-playfair text-accent">{{ stop.city_name }}</h2>
+                                <p class="text-gray-500">{{ stop.arrival_date }} - {{ stop.departure_date }}</p>
+                            </div>
+                            {% if stop.stop_category %}
+                            <div class="flex gap-2">
+                                {% for cat in stop.stop_category %}
+                                <span class="badge-payanam capitalize">{{ cat }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Days -->
+                        {% for day in stop.days %}
+                        <div class="mb-6 last:mb-0">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 gradient-accent rounded-full flex items-center justify-center text-white font-bold">
+                                    D{{ day.day_number }}
+                                </div>
+                                <div>
+                                    <div class="font-medium text-accent">Day {{ day.day_number }}</div>
+                                    <div class="text-sm text-gray-500">{{ day.date }}</div>
+                                </div>
+                            </div>
+                            
+                            {% if day.activities %}
+                            <div class="ml-14 space-y-3">
+                                {% for activity in day.activities %}
+                                <div class="flex items-center gap-4 p-4 bg-cream rounded-xl">
+                                    <div class="w-10 h-10 rounded-lg flex items-center justify-center text-white
+                                        {% if activity.category == 'sightseeing' %}bg-blue-500
+                                        {% elif activity.category == 'food' %}bg-orange-500
+                                        {% elif activity.category == 'shopping' %}bg-pink-500
+                                        {% elif activity.category == 'adventure' %}bg-green-500
+                                        {% elif activity.category == 'relaxation' %}bg-purple-500
+                                        {% else %}bg-gray-500{% endif %}">
+                                        {% if activity.category == 'sightseeing' %}<i class="fas fa-camera"></i>
+                                        {% elif activity.category == 'food' %}<i class="fas fa-utensils"></i>
+                                        {% elif activity.category == 'shopping' %}<i class="fas fa-shopping-bag"></i>
+                                        {% elif activity.category == 'adventure' %}<i class="fas fa-hiking"></i>
+                                        {% elif activity.category == 'relaxation' %}<i class="fas fa-spa"></i>
+                                        {% else %}<i class="fas fa-car"></i>{% endif %}
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="font-medium text-accent">{{ activity.activity_name }}</div>
+                                        <div class="text-sm text-gray-500 capitalize">
+                                            {{ activity.time if activity.time else '' }}
+                                            {{ ' • ' if activity.time else '' }}{{ activity.category }}
+                                        </div>
+                                    </div>
+                                    <div class="font-bold text-secondary">₹{{ activity.estimated_cost }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="ml-14 p-4 bg-gray-50 rounded-xl text-gray-400 text-center">
+                                No activities planned
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Budget Summary -->
+    <div class="max-w-4xl mx-auto mt-12" data-aos="fade-up">
+        <div class="card-payanam p-8 gradient-cream">
+            <h3 class="text-2xl font-bold font-playfair text-accent mb-6 text-center">Trip Summary</h3>
+            <div class="grid md:grid-cols-3 gap-6 text-center">
+                <div>
+                    <div class="text-4xl font-bold text-secondary">{{ itinerary.stops|length }}</div>
+                    <div class="text-gray-500">Cities</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-secondary" id="totalDays">0</div>
+                    <div class="text-gray-500">Days</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-secondary">₹{{ "%.0f"|format(trip.total_budget) }}</div>
+                    <div class="text-gray-500">Total Budget</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-12 card-payanam max-w-2xl mx-auto" data-aos="fade-up">
+        <div class="w-20 h-20 gradient-cream rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-map-marked-alt text-primary text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-bold text-accent mb-2">No Itinerary Yet</h3>
+        <p class="text-gray-500 mb-4">Start building your trip itinerary!</p>
+        <a href="{{ url_for('itinerary_builder', trip_id=trip.trip_id) }}" class="btn-payanam inline-flex items-center gap-2 no-underline">
+            <i class="fas fa-plus"></i>
+            Build Itinerary
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Share Modal -->
+<div class="modal fade modal-payanam" id="shareModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-bold text-accent">
+                    <i class="fas fa-share-alt text-primary mr-2"></i>Share Trip
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center py-6">
+                <div class="mb-4">
+                    <label class="flex items-center justify-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="publicToggle" class="w-5 h-5 accent-primary" {{ 'checked' if trip.is_public else '' }}>
+                        <span class="font-medium">Make this trip public</span>
+                    </label>
+                    <p class="text-sm text-gray-500 mt-2">Public trips can be viewed by anyone with the link</p>
+                </div>
+                
+                <div id="shareLink" class="{{ '' if trip.is_public else 'hidden' }}">
+                    <div class="bg-cream p-4 rounded-xl mb-4">
+                        <div class="text-sm text-gray-500 mb-1">Share URL</div>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="shareLinkInput" class="input-payanam flex-1 text-sm" 
+                                   value="{{ request.host_url }}shared/{{ trip.share_code }}" readonly>
+                            <button onclick="copyShareLink()" class="btn-payanam py-2 px-4">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center gap-4">
+                        <a href="https://wa.me/?text=Check out my trip: {{ request.host_url }}shared/{{ trip.share_code }}" 
+                           target="_blank" class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white hover:opacity-80">
+                            <i class="fab fa-whatsapp text-xl"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?text=Check out my trip on Payanam!&url={{ request.host_url }}shared/{{ trip.share_code }}" 
+                           target="_blank" class="w-12 h-12 bg-blue-400 rounded-full flex items-center justify-center text-white hover:opacity-80">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.host_url }}shared/{{ trip.share_code }}" 
+                           target="_blank" class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white hover:opacity-80">
+                            <i class="fab fa-facebook-f text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Calculate total days
+    const itinerary = {{ trip.itinerary_json|safe }};
+    let totalDays = 0;
+    (itinerary.stops || []).forEach(stop => {
+        totalDays += (stop.days || []).length;
+    });
+    document.getElementById('totalDays').textContent = totalDays;
+    
+    function shareTrip() {
+        const modal = new bootstrap.Modal(document.getElementById('shareModal'));
+        modal.show();
+    }
+    
+    document.getElementById('publicToggle').addEventListener('change', function() {
+        fetch('/api/trip/{{ trip.trip_id }}/toggle-public', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('shareLink').classList.toggle('hidden', !data.is_public);
+            showToast(data.is_public ? 'Trip is now public!' : 'Trip is now private', 'success');
+        });
+    });
+    
+    function copyShareLink() {
+        const input = document.getElementById('shareLinkInput');
+        input.select();
+        document.execCommand('copy');
+        showToast('Link copied to clipboard!', 'success');
+    }
+</script>
+{% endblock %}

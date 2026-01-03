@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - Payanam{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4">
+    <div class="absolute inset-0 z-0">
+        <div class="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-cream rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="grid lg:grid-cols-2 gap-12 items-center max-w-6xl w-full relative z-10">
+        <!-- Left Side - Form -->
+        <div class="card-payanam p-8 lg:p-12 order-2 lg:order-1" data-aos="fade-right">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-plus text-white text-2xl"></i>
+                </div>
+                <h1 class="text-3xl font-bold font-playfair text-accent mb-2">Join Payanam</h1>
+                <p class="text-gray-600">Start planning your Indian adventure</p>
+            </div>
+            
+            {% if error %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-2">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ error }}
+            </div>
+            {% endif %}
+            
+            <form method="POST" action="{{ url_for('signup') }}" id="signupForm">
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-2">
+                        <i class="fas fa-user text-primary mr-2"></i>Full Name
+                    </label>
+                    <input type="text" name="name" required 
+                           class="input-payanam w-full"
+                           placeholder="Enter your name"
+                           id="name"
+                           minlength="2"
+                           maxlength="100">
+                    <span class="text-red-500 text-sm hidden" id="nameError"></span>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-2">
+                        <i class="fas fa-envelope text-primary mr-2"></i>Email Address
+                    </label>
+                    <input type="email" name="email" required 
+                           class="input-payanam w-full"
+                           placeholder="your@email.com"
+                           id="email">
+                    <span class="text-red-500 text-sm hidden" id="emailError"></span>
+                </div>
+                
+                <button type="submit" class="btn-payanam w-full text-lg py-4 mb-6">
+                    <i class="fas fa-rocket mr-2"></i>Create Account
+                </button>
+            </form>
+            
+            <div class="text-center">
+                <p class="text-gray-600">
+                    Already have an account? 
+                    <a href="{{ url_for('login') }}" class="text-secondary font-bold hover:underline">Login</a>
+                </p>
+            </div>
+            
+            <!-- Features Preview -->
+            <div class="mt-8 pt-8 border-t border-gray-100">
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                        <div class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-map text-white text-sm"></i>
+                        </div>
+                        <span class="text-xs text-gray-500">Plan Trips</span>
+                    </div>
+                    <div>
+                        <div class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-rupee-sign text-white text-sm"></i>
+                        </div>
+                        <span class="text-xs text-gray-500">Track Budget</span>
+                    </div>
+                    <div>
+                        <div class="w-10 h-10 gradient-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-share text-white text-sm"></i>
+                        </div>
+                        <span class="text-xs text-gray-500">Share Plans</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Side - Image -->
+        <div class="hidden lg:block order-1 lg:order-2" data-aos="fade-left">
+            <div class="relative">
+                <img src="https://images.unsplash.com/photo-1590766940554-634931ab6293?w=800" alt="India Travel" class="rounded-3xl shadow-2xl">
+                <div class="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 gradient-primary rounded-full flex items-center justify-center">
+                            <i class="fas fa-compass text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500">Start exploring</div>
+                            <div class="text-xl font-bold text-accent">500+ Destinations</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Floating Stats -->
+                <div class="absolute -top-4 -right-4 bg-white p-4 rounded-xl shadow-lg">
+                    <div class="flex items-center gap-3">
+                        <div class="text-2xl">🇮🇳</div>
+                        <div>
+                            <div class="text-xs text-gray-500">Across India</div>
+                            <div class="font-bold text-accent">29 States</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        const name = document.getElementById('name');
+        const nameError = document.getElementById('nameError');
+        const email = document.getElementById('email');
+        const emailError = document.getElementById('emailError');
+        
+        // Name validation
+        if (name.value.trim().length < 2) {
+            e.preventDefault();
+            nameError.textContent = 'Name must be at least 2 characters';
+            nameError.classList.remove('hidden');
+            name.classList.add('border-red-500');
+            isValid = false;
+        } else {
+            nameError.classList.add('hidden');
+            name.classList.remove('border-red-500');
+        }
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.value)) {
+            e.preventDefault();
+            emailError.textContent = 'Please enter a valid email address';
+            emailError.classList.remove('hidden');
+            email.classList.add('border-red-500');
+            isValid = false;
+        } else {
+            emailError.classList.add('hidden');
+            email.classList.remove('border-red-500');
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}
