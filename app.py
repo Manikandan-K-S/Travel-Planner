@@ -3,13 +3,23 @@ Payanam - Indian Travel Itinerary Planner
 A beautiful, UI-focused travel planning application for exploring India
 """
 
+import os
+from functools import wraps
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from models import db, User, Trip, City, Activity
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'payanam-secret-key-2026'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///payanam.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Admin credentials from environment
+ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'admin')
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'admin')
 
 # Initialize db with app
 db.init_app(app)
@@ -539,6 +549,39 @@ def profile():
     return render_template('profile.html', user=user, trips=trips)
 
 
+@app.route('/api/profile/update', methods=['POST'])
+def update_profile():
+    """API endpoint to update user profile"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    user = User.query.get(session['user_id'])
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
+    data = request.get_json()
+    
+    # Update name
+    if data.get('name'):
+        user.name = data['name'].strip()[:100]  # Limit to 100 chars
+        session['user_name'] = user.name
+    
+    # Update avatar URL if provided
+    if data.get('avatar_url'):
+        user.avatar_url = data['avatar_url']
+    
+    # Update language preference if provided
+    if data.get('language_pref'):
+        user.language_pref = data['language_pref']
+    
+    db.session.commit()
+    
+    return jsonify({
+        'success': True,
+        'user': user.to_dict()
+    })
+
+
 @app.route('/profile/delete', methods=['POST'])
 def delete_account():
     if 'user_id' not in session:
@@ -640,6 +683,134 @@ def api_analytics():
         'category_count': category_count,
         'budget_by_trip': budget_by_trip
     })
+
+
+# ============== ADMIN PANEL ==============
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('is_admin'):
+            return redirect(url_for('admin_login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if session.get('is_admin'):
+        return redirect(url_for('admin_dashboard'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session['is_admin'] = True
+            return redirect(url_for('admin_dashboard'))
+        else:
+            return render_template('admin_login.html', error='Invalid credentials')
+    
+    return render_template('admin_login.html')
+
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('is_admin', None)
+    return redirect(url_for('admin_login'))
+
+
+@app.route('/admin')
+@admin_required
+def admin_dashboard():
+    users = User.query.all()
+    trips = Trip.query.all()
+    cities = City.query.all()
+    activities = Activity.query.all()
+    
+    stats = {
+        'total_users': len(users),
+        'total_trips': len(trips),
+        'total_cities': len(cities),
+        'total_activities': len(activities)
+    }
+    
+    return render_template('admin.html', users=users, trips=trips, cities=cities, activities=activities, stats=stats)
+
+
+# Admin API Routes
+@app.route('/admin/api/user/<user_id>', methods=['DELETE'])
+@admin_required
+def admin_delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+    # Delete all user's trips first
+    Trip.query.filter_by(user_id=user_id).delete()
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({'success': True})
+
+
+@app.route('/admin/api/trip/<trip_id>', methods=['DELETE'])
+@admin_required
+def admin_delete_trip(trip_id):
+    trip = Trip.query.get_or_404(trip_id)
+    db.session.delete(trip)
+    db.session.commit()
+    return jsonify({'success': True})
+
+
+@app.route('/admin/api/city/<city_id>', methods=['DELETE'])
+@admin_required
+def admin_delete_city(city_id):
+    city = City.query.get_or_404(city_id)
+    # Delete all activities in this city first
+    Activity.query.filter_by(city_id=city_id).delete()
+    db.session.delete(city)
+    db.session.commit()
+    return jsonify({'success': True})
+
+
+@app.route('/admin/api/activity/<activity_id>', methods=['DELETE'])
+@admin_required
+def admin_delete_activity(activity_id):
+    activity = Activity.query.get_or_404(activity_id)
+    db.session.delete(activity)
+    db.session.commit()
+    return jsonify({'success': True})
+
+
+@app.route('/admin/city/add', methods=['POST'])
+@admin_required
+def admin_add_city():
+    import uuid
+    city = City(
+        city_id=str(uuid.uuid4()),
+        city_name=request.form.get('city_name'),
+        state=request.form.get('state'),
+        image_url=request.form.get('image_url', ''),
+        description=request.form.get('description', '')
+    )
+    db.session.add(city)
+    db.session.commit()
+    return redirect(url_for('admin_dashboard'))
+
+
+@app.route('/admin/activity/add', methods=['POST'])
+@admin_required
+def admin_add_activity():
+    import uuid
+    activity = Activity(
+        activity_id=str(uuid.uuid4()),
+        activity_name=request.form.get('activity_name'),
+        city_id=request.form.get('city_id'),
+        activity_type=request.form.get('activity_type', 'sightseeing'),
+        duration=request.form.get('duration', ''),
+        cost=float(request.form.get('cost', 0)),
+        description=request.form.get('description', '')
+    )
+    db.session.add(activity)
+    db.session.commit()
+    return redirect(url_for('admin_dashboard'))
 
 
 # Initialize Database

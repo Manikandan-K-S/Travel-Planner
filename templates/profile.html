@@ -11,22 +11,22 @@
                 <!-- Avatar -->
                 <div class="relative">
                     <div class="w-32 h-32 gradient-primary rounded-full flex items-center justify-center text-white text-5xl font-bold shadow-lg" id="avatarDisplay">
-                        {{ session.user_name[0]|upper if session.user_name else 'U' }}
+                        {{ user.name[0]|upper if user and user.name else 'U' }}
                     </div>
-                    <button onclick="changeAvatar()" class="absolute bottom-0 right-0 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-primary hover:bg-cream transition-colors">
+                    <button onclick="changeAvatar()" class="absolute bottom-0 right-0 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-primary hover:bg-cream transition-colors" title="Change Avatar">
                         <i class="fas fa-camera"></i>
                     </button>
                 </div>
                 
                 <!-- User Info -->
                 <div class="flex-1 text-center md:text-left">
-                    <h1 class="text-3xl font-bold text-accent font-playfair mb-2" id="displayName">{{ session.user_name }}</h1>
+                    <h1 class="text-3xl font-bold text-accent font-playfair mb-2" id="displayName">{{ user.name if user else 'User' }}</h1>
                     <p class="text-gray-500 mb-4">
-                        <i class="fas fa-envelope mr-2"></i>{{ session.user_email }}
+                        <i class="fas fa-envelope mr-2"></i>{{ user.email if user else session.user_email }}
                     </p>
                     <div class="flex flex-wrap justify-center md:justify-start gap-4">
                         <div class="bg-cream px-4 py-2 rounded-lg">
-                            <span class="font-bold text-accent" id="tripCount">0</span>
+                            <span class="font-bold text-accent" id="tripCount">{{ trips|length if trips else 0 }}</span>
                             <span class="text-gray-500 text-sm ml-1">Trips</span>
                         </div>
                         <div class="bg-cream px-4 py-2 rounded-lg">
@@ -34,17 +34,20 @@
                             <span class="text-gray-500 text-sm ml-1">Cities</span>
                         </div>
                         <div class="bg-cream px-4 py-2 rounded-lg">
-                            <span class="font-bold text-accent" id="memberSince">-</span>
+                            <span class="font-bold text-accent" id="memberSince">{{ user.created_at.strftime('%b %Y') if user and user.created_at else 'New' }}</span>
                             <span class="text-gray-500 text-sm ml-1">Member</span>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Actions -->
-                <div>
+                <div class="flex flex-col gap-3">
                     <button onclick="toggleEditMode()" class="btn-payanam-outline" id="editBtn">
                         <i class="fas fa-edit mr-2"></i>Edit Profile
                     </button>
+                    <a href="{{ url_for('logout') }}" class="btn-payanam text-center no-underline">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
                 </div>
             </div>
         </div>
@@ -55,31 +58,31 @@
                 <i class="fas fa-user-edit text-primary mr-2"></i>Edit Profile
             </h3>
             
-            <form id="profileForm">
+            <form id="profileForm" method="POST" action="{{ url_for('update_profile') }}">
                 <div class="grid md:grid-cols-2 gap-6 mb-6">
                     <div>
                         <label class="block font-medium text-accent mb-2">Display Name</label>
-                        <input type="text" id="editName" class="input-payanam w-full" 
-                               value="{{ session.user_name }}" maxlength="50" required>
+                        <input type="text" id="editName" name="name" class="input-payanam w-full" 
+                               value="{{ user.name if user else '' }}" maxlength="100" required placeholder="Your name">
                     </div>
                     <div>
                         <label class="block font-medium text-accent mb-2">Email</label>
                         <input type="email" id="editEmail" class="input-payanam w-full bg-gray-100" 
-                               value="{{ session.user_email }}" disabled>
+                               value="{{ user.email if user else '' }}" disabled placeholder="Email cannot be changed">
                         <p class="text-xs text-gray-500 mt-1">Email cannot be changed</p>
                     </div>
                 </div>
                 
                 <div class="mb-6">
                     <label class="block font-medium text-accent mb-2">Bio</label>
-                    <textarea id="editBio" class="input-payanam w-full h-24 resize-none" 
+                    <textarea id="editBio" name="bio" class="input-payanam w-full h-24 resize-none" 
                               maxlength="200" placeholder="Tell us about yourself..."></textarea>
                     <p class="text-xs text-gray-500 mt-1"><span id="bioCount">0</span>/200 characters</p>
                 </div>
                 
                 <div class="mb-6">
                     <label class="block font-medium text-accent mb-2">Home City</label>
-                    <input type="text" id="editCity" class="input-payanam w-full" 
+                    <input type="text" id="editCity" name="home_city" class="input-payanam w-full" 
                            placeholder="e.g., Chennai, Bangalore, Mumbai">
                 </div>
                 
@@ -209,10 +212,31 @@
                 </div>
             </div>
             
+            <!-- Session & Logout -->
             <div class="mt-6 pt-6 border-t border-gray-200">
-                <button onclick="logout()" class="text-red-500 hover:text-red-600 transition-colors">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                </button>
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <div class="font-medium text-accent">Session</div>
+                        <div class="text-sm text-gray-500">Logged in as {{ user.email if user else session.user_email }}</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="text-red-500 hover:text-red-600 transition-colors font-medium no-underline">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Danger Zone -->
+            <div class="mt-6 pt-6 border-t border-red-200">
+                <h4 class="text-red-600 font-semibold mb-4"><i class="fas fa-exclamation-triangle mr-2"></i>Danger Zone</h4>
+                <div class="flex items-center justify-between p-4 bg-red-50 rounded-xl border border-red-200">
+                    <div>
+                        <div class="font-medium text-red-700">Delete Account</div>
+                        <div class="text-sm text-red-500">Permanently delete your account and all trips</div>
+                    </div>
+                    <button onclick="confirmDeleteAccount()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                        <i class="fas fa-trash mr-2"></i>Delete
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -221,7 +245,7 @@
 
 {% block scripts %}
 <script>
-    // Load profile data
+    // Load profile data on page load
     document.addEventListener('DOMContentLoaded', function() {
         loadProfileStats();
         loadRecentTrips();
@@ -229,42 +253,34 @@
     });
     
     function loadProfileStats() {
-        // This would typically fetch from API
-        // For demo, using localStorage
-        const trips = JSON.parse(localStorage.getItem('payanam_trips') || '[]');
-        document.getElementById('tripCount').textContent = trips.length;
-        document.getElementById('statTrips').textContent = trips.length;
-        
-        let cities = new Set();
-        let activities = 0;
-        let spent = 0;
-        
-        trips.forEach(trip => {
-            spent += trip.total_budget || 0;
-            if (trip.itinerary && trip.itinerary.stops) {
-                trip.itinerary.stops.forEach(stop => {
-                    cities.add(stop.city_name);
-                    if (stop.days) {
-                        stop.days.forEach(day => {
-                            activities += (day.activities || []).length;
+        // Calculate stats from trips data passed from backend
+        fetch('/api/trips')
+            .then(response => response.json())
+            .then(data => {
+                const trips = data.trips || [];
+                let cities = new Set();
+                let activities = 0;
+                let spent = 0;
+                
+                trips.forEach(trip => {
+                    spent += trip.total_budget || 0;
+                    if (trip.itinerary && trip.itinerary.stops) {
+                        trip.itinerary.stops.forEach(stop => {
+                            cities.add(stop.city_name);
+                            if (stop.days) {
+                                stop.days.forEach(day => {
+                                    activities += (day.activities || []).length;
+                                });
+                            }
                         });
                     }
                 });
-            }
-        });
-        
-        document.getElementById('cityCount').textContent = cities.size;
-        document.getElementById('statActivities').textContent = activities;
-        document.getElementById('statSpent').textContent = '₹' + spent.toLocaleString();
-        
-        // Member since
-        const user = JSON.parse(localStorage.getItem('payanam_user') || '{}');
-        if (user.created_at) {
-            const date = new Date(user.created_at);
-            document.getElementById('memberSince').textContent = date.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
-        } else {
-            document.getElementById('memberSince').textContent = 'New';
-        }
+                
+                document.getElementById('cityCount').textContent = cities.size;
+                document.getElementById('statActivities').textContent = activities;
+                document.getElementById('statSpent').textContent = '₹' + spent.toLocaleString('en-IN');
+            })
+            .catch(error => console.log('Could not load stats:', error));
     }
     
     function loadRecentTrips() {
@@ -290,8 +306,9 @@
                 
                 container.innerHTML = data.trips.map(trip => `
                     <a href="/trip/${trip.trip_id}" class="flex items-center gap-4 p-4 bg-cream rounded-xl hover:bg-primary/10 transition-colors no-underline">
-                        <div class="w-16 h-16 gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-suitcase-rolling text-white text-xl"></i>
+                        <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                            <img src="${trip.cover_image || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=200'}" 
+                                 alt="${trip.trip_name}" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="font-medium text-accent truncate">${trip.trip_name}</div>
@@ -320,32 +337,49 @@
             : '<i class="fas fa-times mr-2"></i>Cancel';
     }
     
+    // Bio character counter
     document.getElementById('editBio').addEventListener('input', function() {
         document.getElementById('bioCount').textContent = this.value.length;
     });
     
+    // AJAX form submission for profile update
     document.getElementById('profileForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const name = document.getElementById('editName').value.trim();
+        const formData = new FormData(this);
+        const name = formData.get('name').trim();
         
         if (!name) {
             showToast('Name is required', 'error');
             return;
         }
         
-        // Save to localStorage for demo
-        const user = JSON.parse(localStorage.getItem('payanam_user') || '{}');
-        user.name = name;
-        user.bio = document.getElementById('editBio').value.trim();
-        user.city = document.getElementById('editCity').value.trim();
-        localStorage.setItem('payanam_user', JSON.stringify(user));
-        
-        document.getElementById('displayName').textContent = name;
-        document.getElementById('avatarDisplay').textContent = name[0].toUpperCase();
-        
-        toggleEditMode();
-        showToast('Profile updated!', 'success');
+        fetch('/api/profile/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: name,
+                bio: formData.get('bio'),
+                home_city: formData.get('home_city')
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update UI
+                document.getElementById('displayName').textContent = name;
+                document.getElementById('avatarDisplay').textContent = name[0].toUpperCase();
+                toggleEditMode();
+                showToast('Profile updated successfully!', 'success');
+            } else {
+                showToast(data.error || 'Failed to update profile', 'error');
+            }
+        })
+        .catch(error => {
+            showToast('Error updating profile', 'error');
+        });
     });
     
     function loadPreferences() {
@@ -378,8 +412,61 @@
         showToast('Avatar upload coming soon!', 'info');
     }
     
-    function logout() {
-        window.location.href = "{{ url_for('logout') }}";
+    function confirmDeleteAccount() {
+        if (confirm('Are you sure you want to delete your account? This action cannot be undone and all your trips will be permanently deleted.')) {
+            if (confirm('This is your last chance. Type DELETE in the next prompt to confirm.')) {
+                const confirmation = prompt('Type DELETE to confirm account deletion:');
+                if (confirmation === 'DELETE') {
+                    deleteAccount();
+                } else {
+                    showToast('Account deletion cancelled', 'info');
+                }
+            }
+        }
+    }
+    
+    function deleteAccount() {
+        fetch('/profile/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Account deleted. Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1500);
+            } else {
+                showToast(data.error || 'Failed to delete account', 'error');
+            }
+        })
+        .catch(error => {
+            showToast('Error deleting account', 'error');
+        });
+    }
+    
+    // Toast notification helper
+    function showToast(message, type = 'info') {
+        const colors = {
+            success: 'bg-green-500',
+            error: 'bg-red-500',
+            info: 'bg-blue-500',
+            warning: 'bg-yellow-500'
+        };
+        
+        const toast = document.createElement('div');
+        toast.className = `fixed bottom-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in`;
+        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation' : 'info'}-circle mr-2"></i>${message}`;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'transition-opacity');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 </script>
 {% endblock %}

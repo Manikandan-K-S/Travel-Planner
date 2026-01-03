@@ -37,7 +37,7 @@ wheels/
 Thumbs.db
 
 # Environment variables
-.env
+# .env - NOT ignored for this project (credentials stored here)
 .env.local
 
 # Logs

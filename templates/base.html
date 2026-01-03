@@ -360,16 +360,30 @@
                     <div class="relative group">
                         <button class="flex items-center gap-2 text-gray-600 hover:text-secondary transition">
                             <div class="w-8 h-8 gradient-primary rounded-full flex items-center justify-center">
-                                <i class="fas fa-user text-white text-sm"></i>
+                                <span class="text-white text-sm font-bold">{{ session.get('user_name', 'U')[0]|upper }}</span>
                             </div>
                             <span class="font-medium">{{ session.get('user_name', 'User') }}</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
                         </button>
-                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 py-2">
-                            <a href="{{ url_for('profile') }}" class="block px-4 py-2 text-gray-600 hover:bg-cream hover:text-secondary transition no-underline">
-                                <i class="fas fa-user-circle mr-2"></i>Profile
+                        <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 py-2 border border-gray-100">
+                            <!-- User Info -->
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <p class="font-semibold text-accent">{{ session.get('user_name', 'User') }}</p>
+                                <p class="text-xs text-gray-500 truncate">{{ session.get('user_email', '') }}</p>
+                            </div>
+                            <!-- Menu Items -->
+                            <a href="{{ url_for('profile') }}" class="flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-cream hover:text-secondary transition no-underline">
+                                <i class="fas fa-user-circle w-5 text-center"></i>My Profile
                             </a>
-                            <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-gray-600 hover:bg-cream hover:text-secondary transition no-underline">
-                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            <a href="{{ url_for('my_trips') }}" class="flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-cream hover:text-secondary transition no-underline">
+                                <i class="fas fa-suitcase w-5 text-center"></i>My Trips
+                            </a>
+                            <a href="{{ url_for('analytics') }}" class="flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-cream hover:text-secondary transition no-underline">
+                                <i class="fas fa-chart-line w-5 text-center"></i>Analytics
+                            </a>
+                            <hr class="my-2 border-gray-100">
+                            <a href="{{ url_for('logout') }}" class="flex items-center gap-3 px-4 py-2 text-red-500 hover:bg-red-50 hover:text-red-600 transition no-underline">
+                                <i class="fas fa-sign-out-alt w-5 text-center"></i>Logout
                             </a>
                         </div>
                     </div>
