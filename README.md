@@ -11,7 +11,9 @@
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.x-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 [![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=flat-square&logo=sqlite)](https://sqlite.org/)
 
-[Features](#-features) • [Installation](#-installation) • [Pages](#-pages--routes) • [API](#-api-endpoints) • [Admin](#-admin-panel)
+### 🌐 Live Demo: [http://3.111.37.142:5001/](http://3.111.37.142:5001/)
+
+[Features](#-features) • [Installation](#-installation) • [Pages](#-pages--routes) • [API](#-api-endpoints) • [Admin](#-admin-panel) • [Test Credentials](#-test-credentials)
 
 </div>
 
@@ -400,14 +402,55 @@ gunicorn -w 4 -b 0.0.0.0:8000 app:app
 
 ---
 
-## 📝 Sample User Credentials
+## � Test Credentials
 
-For testing purposes, you can create an account or use:
+### 🌐 Live Website Access
 
-| Type | Email | Password |
-|------|-------|----------|
-| Regular User | *(Create via signup)* | *(Your choice)* |
-| Admin | admin | admin |
+| | |
+|---|---|
+| **URL** | 🔗 [http://3.111.37.142:5001/](http://3.111.37.142:5001/) |
+| **Status** | ✅ Live |
+
+### 👤 Test User Account
+
+| Field | Value |
+|-------|-------|
+| **Email** | `mani.ks1324579@gmail.com` |
+| **Password** | *(Contact admin for password)* |
+| **Pre-loaded Data** | 4 sample trips with full itineraries |
+
+### 🔐 Admin Panel Access
+
+| Field | Value |
+|-------|-------|
+| **URL** | [http://3.111.37.142:5001/admin/login](http://3.111.37.142:5001/admin/login) |
+| **Username** | `admin` |
+| **Password** | `admin` |
+
+### 🆕 Create Your Own Account
+
+1. Visit [http://3.111.37.142:5001/signup](http://3.111.37.142:5001/signup)
+2. Enter your name, email, and password
+3. Start planning your Indian adventure!
+
+---
+
+## 📝 Quick Access Links
+
+| Page | URL |
+|------|-----|
+| 🏠 **Home** | [http://3.111.37.142:5001/](http://3.111.37.142:5001/) |
+| 🔐 **Login** | [http://3.111.37.142:5001/login](http://3.111.37.142:5001/login) |
+| 📝 **Sign Up** | [http://3.111.37.142:5001/signup](http://3.111.37.142:5001/signup) |
+| 📊 **Dashboard** | [http://3.111.37.142:5001/dashboard](http://3.111.37.142:5001/dashboard) |
+| ✈️ **My Trips** | [http://3.111.37.142:5001/trips](http://3.111.37.142:5001/trips) |
+| ➕ **Create Trip** | [http://3.111.37.142:5001/trip/create](http://3.111.37.142:5001/trip/create) |
+| 🏙️ **Cities** | [http://3.111.37.142:5001/cities](http://3.111.37.142:5001/cities) |
+| 🎯 **Activities** | [http://3.111.37.142:5001/activities](http://3.111.37.142:5001/activities) |
+| 👤 **Profile** | [http://3.111.37.142:5001/profile](http://3.111.37.142:5001/profile) |
+| 📈 **Analytics** | [http://3.111.37.142:5001/analytics](http://3.111.37.142:5001/analytics) |
+| 🔐 **Admin Login** | [http://3.111.37.142:5001/admin/login](http://3.111.37.142:5001/admin/login) |
+| 📋 **Admin Panel** | [http://3.111.37.142:5001/admin](http://3.111.37.142:5001/admin) |
 
 ---
 
