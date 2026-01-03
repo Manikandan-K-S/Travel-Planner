@@ -115,17 +115,94 @@
             </div>
         </a>
         
-        <a href="{{ url_for('analytics') }}" class="card-payanam p-6 group hover:bg-primary/5 transition no-underline" data-aos="fade-up" data-aos-delay="200">
+        
+        
+        <a href="{{ url_for('activity_search') }}" class="card-payanam p-6 group hover:bg-primary/5 transition no-underline" data-aos="fade-up" data-aos-delay="300">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
-                    <i class="fas fa-chart-bar text-white"></i>
+                <div class="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                    <i class="fas fa-hiking text-white"></i>
                 </div>
                 <div>
-                    <div class="font-bold text-accent">View Analytics</div>
-                    <div class="text-sm text-gray-500">Track your travel patterns</div>
+                    <div class="font-bold text-accent">Explore Activities</div>
+                    <div class="text-sm text-gray-500">Find things to do</div>
                 </div>
             </div>
         </a>
+    </div>
+    
+    <!-- Explore Section -->
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <!-- Explore Cities Card -->
+        <div class="card-payanam overflow-hidden" data-aos="fade-up">
+            <div class="gradient-primary p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">
+                            <i class="fas fa-city mr-2"></i>Explore Cities
+                        </h3>
+                        <p class="opacity-90 text-sm">Discover amazing Indian destinations</p>
+                    </div>
+                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-map-marked-alt text-3xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                    <div class="text-center p-3 bg-cream rounded-xl">
+                        <div class="text-2xl mb-1">🏰</div>
+                        <div class="text-xs text-gray-600">Heritage</div>
+                    </div>
+                    <div class="text-center p-3 bg-cream rounded-xl">
+                        <div class="text-2xl mb-1">🏖️</div>
+                        <div class="text-xs text-gray-600">Beaches</div>
+                    </div>
+                    <div class="text-center p-3 bg-cream rounded-xl">
+                        <div class="text-2xl mb-1">🏔️</div>
+                        <div class="text-xs text-gray-600">Hills</div>
+                    </div>
+                </div>
+                <a href="{{ url_for('city_search') }}" class="btn-payanam w-full text-center no-underline block">
+                    <i class="fas fa-search mr-2"></i>Browse All Cities
+                </a>
+            </div>
+        </div>
+        
+        <!-- Explore Activities Card -->
+        <div class="card-payanam overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+            <div class="gradient-accent p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">
+                            <i class="fas fa-hiking mr-2"></i>Explore Activities
+                        </h3>
+                        <p class="opacity-90 text-sm">Find amazing things to do</p>
+                    </div>
+                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-camera text-3xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                    <div class="text-center p-3 bg-cream rounded-xl">
+                        <div class="text-2xl mb-1">📸</div>
+                        <div class="text-xs text-gray-600">Sightseeing</div>
+                    </div>
+                    <div class="text-center p-3 bg-cream rounded-xl">
+                        <div class="text-2xl mb-1">🍽️</div>
+                        <div class="text-xs text-gray-600">Food</div>
+                    </div>
+                    <div class="text-center p-3 bg-cream rounded-xl">
+                        <div class="text-2xl mb-1">🛕</div>
+                        <div class="text-xs text-gray-600">Spiritual</div>
+                    </div>
+                </div>
+                <a href="{{ url_for('activity_search') }}" class="btn-payanam w-full text-center no-underline block">
+                    <i class="fas fa-search mr-2"></i>Browse All Activities
+                </a>
+            </div>
+        </div>
     </div>
     
     <!-- Recent Trips -->

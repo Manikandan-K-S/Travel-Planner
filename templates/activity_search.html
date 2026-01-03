@@ -300,7 +300,43 @@
     });
     document.getElementById('cityFilter').addEventListener('change', filterActivities);
     
-    // Initial load
-    renderActivities(activities);
+    // Load activities from API and merge with hardcoded data
+    async function loadActivitiesFromAPI() {
+        try {
+            const response = await fetch('/api/activities/frontend-format');
+            if (response.ok) {
+                const apiActivities = await response.json();
+                if (apiActivities.length > 0) {
+                    // Merge API activities with hardcoded (add unique ones)
+                    const existingNames = new Set(activities.map(a => a.name.toLowerCase()));
+                    apiActivities.forEach(activity => {
+                        if (!existingNames.has(activity.name.toLowerCase())) {
+                            activities.push(activity);
+                            existingNames.add(activity.name.toLowerCase());
+                        }
+                    });
+                    console.log('Activities loaded from API:', apiActivities.length);
+                    
+                    // Update city filter with new cities
+                    const cities = [...new Set(activities.map(a => a.city))].sort();
+                    const cityFilter = document.getElementById('cityFilter');
+                    cityFilter.innerHTML = '<option value="">All Cities</option>';
+                    cities.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city;
+                        option.textContent = city;
+                        cityFilter.appendChild(option);
+                    });
+                }
+            }
+        } catch (error) {
+            console.log('Using hardcoded activity data:', error);
+        }
+        // Render after API check
+        filterActivities();
+    }
+
+    // Initial load with API check
+    loadActivitiesFromAPI();
 </script>
 {% endblock %}

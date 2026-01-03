@@ -297,7 +297,37 @@
     document.getElementById('stateFilter').addEventListener('change', filterCities);
     document.getElementById('categoryFilter').addEventListener('change', filterCities);
     
-    // Initial load
-    renderCities(indianCities);
+    // Load cities from API and merge with hardcoded data
+    async function loadCitiesFromAPI() {
+        try {
+            const response = await fetch('/api/cities/frontend-format');
+            if (response.ok) {
+                const apiCities = await response.json();
+                if (Object.keys(apiCities).length > 0) {
+                    // Merge API cities with hardcoded (API takes priority)
+                    Object.keys(apiCities).forEach(city => {
+                        if (!indianCities[city]) {
+                            indianCities[city] = apiCities[city];
+                        } else {
+                            // Merge activities from API if missing
+                            if (apiCities[city].activities) {
+                                indianCities[city].activities = [
+                                    ...new Set([...indianCities[city].activities, ...apiCities[city].activities])
+                                ];
+                            }
+                        }
+                    });
+                    console.log('Cities loaded from API:', Object.keys(apiCities).length);
+                }
+            }
+        } catch (error) {
+            console.log('Using hardcoded city data:', error);
+        }
+        // Render after API check
+        filterCities();
+    }
+
+    // Initial load with API check
+    loadCitiesFromAPI();
 </script>
 {% endblock %}

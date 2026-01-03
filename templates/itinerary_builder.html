@@ -301,54 +301,81 @@
 
 {% block scripts %}
 <script>
-    // Indian Cities Database
+    // Indian Cities Database - Comprehensive data for Rajasthan, Tamil Nadu, Kerala and more
     const indianCities = {
-        // Rajasthan
-        'Jaipur': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=200', activities: ['Amber Fort', 'Hawa Mahal', 'City Palace', 'Nahargarh Fort', 'Jantar Mantar', 'Jal Mahal', 'Birla Mandir', 'Albert Hall Museum', 'Johari Bazaar Shopping'] },
-        'Udaipur': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1477587458883-47145ed94245?w=200', activities: ['City Palace', 'Lake Pichola Boat Ride', 'Jag Mandir', 'Sajjangarh Palace', 'Fateh Sagar Lake', 'Bagore Ki Haveli', 'Vintage Car Museum'] },
-        'Jaisalmer': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1587135941948-670b381f08ce?w=200', activities: ['Jaisalmer Fort', 'Sam Sand Dunes', 'Camel Safari', 'Patwon Ki Haveli', 'Desert Camping', 'Gadisar Lake', 'Kuldhara Ghost Village'] },
-        'Jodhpur': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200', activities: ['Mehrangarh Fort', 'Umaid Bhawan Palace', 'Jaswant Thada', 'Mandore Gardens', 'Clock Tower Market', 'Blue City Walk'] },
-        'Pushkar': { state: 'Rajasthan', activities: ['Brahma Temple', 'Pushkar Lake', 'Savitri Temple', 'Camel Fair (Nov)', 'Rose Garden', 'Old Rangji Temple'] },
+        // ==================== RAJASTHAN (15 Cities) ====================
+        'Jaipur': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1477587458883-47145ed94245?w=400', activities: ['Amber Fort', 'Hawa Mahal', 'City Palace Jaipur', 'Nahargarh Fort', 'Jantar Mantar', 'Jal Mahal', 'Birla Mandir Jaipur', 'Albert Hall Museum', 'Johari Bazaar Shopping', 'Chokhi Dhani Village'] },
+        'Udaipur': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1568495248636-6432b97bd949?w=400', activities: ['City Palace Udaipur', 'Lake Pichola Boat Ride', 'Jag Mandir Island', 'Sajjangarh Monsoon Palace', 'Fateh Sagar Lake', 'Bagore Ki Haveli', 'Vintage Car Museum', 'Jagdish Temple', 'Saheliyon Ki Bari', 'Shilpgram Craft Village'] },
+        'Jaisalmer': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1587135941948-670b381f08ce?w=400', activities: ['Jaisalmer Fort', 'Sam Sand Dunes', 'Desert Camel Safari', 'Patwon Ki Haveli', 'Desert Camping Night', 'Gadisar Lake', 'Kuldhara Ghost Village', 'Bada Bagh Cenotaphs', 'Desert Cultural Show', 'Tanot Mata Temple'] },
+        'Jodhpur': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400', activities: ['Mehrangarh Fort', 'Umaid Bhawan Palace', 'Jaswant Thada', 'Mandore Gardens', 'Clock Tower Market', 'Blue City Walking Tour', 'Rao Jodha Desert Park', 'Toorji Ka Jhalra Stepwell', 'Masuria Hills Garden', 'Flying Fox Zipline'] },
+        'Pushkar': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=400', activities: ['Brahma Temple', 'Pushkar Lake Ghats', 'Savitri Temple Trek', 'Pushkar Camel Fair', 'Rose Garden Visit', 'Old Rangji Temple', 'Varaha Temple', 'Pushkar Bazaar Shopping', 'Sunset Point Hills', 'Cooking Class Experience'] },
+        'Bikaner': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1624461850043-dde2eafdb482?w=400', activities: ['Junagarh Fort', 'Karni Mata Temple', 'Lalgarh Palace', 'Camel Research Centre', 'Bikaner Camel Safari', 'Rampuria Haveli', 'Gajner Palace', 'Bhujia Snack Tasting', 'Devi Kund Sagar', 'Ganga Golden Jubilee Museum'] },
+        'Mount Abu': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400', activities: ['Dilwara Jain Temples', 'Nakki Lake Boating', 'Sunset Point', 'Guru Shikhar Peak', 'Achalgarh Fort', 'Wildlife Sanctuary Safari', 'Peace Park', 'Honeymoon Point', 'Toad Rock Viewpoint', 'Trevor Tank Lake'] },
+        'Ajmer': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1590766740554-f14a61e8b0a4?w=400', activities: ['Ajmer Sharif Dargah', 'Ana Sagar Lake', 'Adhai Din Ka Jhonpra', 'Taragarh Fort', 'Akbari Mosque', 'Nareli Jain Temple', 'Foy Sagar Lake', 'Soniji Ki Nasiyan', 'Magazine Museum', 'Prithviraj Smarak'] },
+        'Bundi': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1599661046827-dacff0c0f09a?w=400', activities: ['Taragarh Fort Bundi', 'Bundi Palace', 'Raniji Ki Baori', 'Nawal Sagar Lake', 'Chitrashala Paintings', 'Sukh Mahal', '84 Pillared Cenotaph', 'Dabhai Kund Stepwell', 'Jait Sagar Lake', 'Phool Sagar Palace'] },
+        'Chittorgarh': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1623682242968-73e5e3eca697?w=400', activities: ['Chittorgarh Fort', 'Vijay Stambha Tower', 'Kirti Stambha', 'Rana Kumbha Palace', 'Padmini Palace', 'Meera Temple', 'Gaumukh Reservoir', 'Kalika Mata Temple', 'Fateh Prakash Palace', 'Light and Sound Show'] },
+        'Ranthambore': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1549366021-9f761d450615?w=400', activities: ['Tiger Safari Morning', 'Tiger Safari Evening', 'Ranthambore Fort', 'Padam Talao Lake', 'Jogi Mahal', 'Ganesh Temple', 'Surwal Lake Birds', 'Kachida Valley', 'Rajbagh Ruins', 'Wildlife Photography Tour'] },
+        'Alwar': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1600100397608-e4fbcbff3e5a?w=400', activities: ['Bala Quila Fort', 'Sariska Tiger Reserve', 'Siliserh Lake Palace', 'Alwar City Palace', 'Moosi Maharani Chhatri', 'Government Museum', 'Bhangarh Fort', 'Neemrana Fort Palace', 'Vijay Mandir Palace', 'Pandupol Hanuman Temple'] },
+        'Bharatpur': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400', activities: ['Keoladeo Bird Sanctuary', 'Lohagarh Fort', 'Bharatpur Palace', 'Government Museum', 'Ganga Mandir', 'Laxman Temple', 'Deeg Palace Day Trip', 'Bird Photography Tour', 'Cycle Safari', 'Boat Ride in Sanctuary'] },
+        'Mandawa': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1590766940554-f14a61e8b0a4?w=400', activities: ['Mandawa Fort', 'Haveli Heritage Walk', 'Murmuria Haveli', 'Hanuman Prasad Goenka Haveli', 'Gulab Rai Ladia Haveli', 'Jhunjhunwala Haveli', 'Open Air Art Gallery', 'Shekhawati Painting Tour', 'Camel Cart Ride', 'Village Cultural Tour'] },
+        'Sawai Madhopur': { state: 'Rajasthan', image: 'https://images.unsplash.com/photo-1574068468668-a05a11f871da?w=400', activities: ['Ranthambore National Park', 'Trinetra Ganesh Temple', 'Ranthambore Fort', 'Khandar Fort', 'Chambal Safari', 'Malik Talao', 'Bakula', 'Lakarda and Anantpura', 'Raj Bagh Talao', 'Canter Safari Experience'] },
 
-        // Tamil Nadu
-        'Chennai': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=200', activities: ['Marina Beach', 'Kapaleeshwarar Temple', 'Fort St. George', 'San Thome Cathedral', 'Government Museum', 'Valluvar Kottam', 'T Nagar Shopping', 'Filter Coffee at Saravana Bhavan'] },
-        'Madurai': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1590766940554-634931ab6293?w=200', activities: ['Meenakshi Amman Temple', 'Thirumalai Nayakkar Palace', 'Gandhi Memorial Museum', 'Banana Market', 'Jigarthanda at Famous', 'Alagar Kovil'] },
-        'Coimbatore': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200', activities: ['Isha Yoga Center', 'Dhyanalinga', 'Marudamalai Temple', 'VOC Park', 'Kovai Kondattam', 'Brookefields Mall', 'Annapoorna Restaurant', 'Siruvani Waterfalls'] },
-        'Ooty': { state: 'Tamil Nadu', activities: ['Botanical Gardens', 'Ooty Lake', 'Nilgiri Mountain Railway', 'Doddabetta Peak', 'Tea Factory Visit', 'Rose Garden', 'Pykara Falls'] },
-        'Kodaikanal': { state: 'Tamil Nadu', activities: ['Kodaikanal Lake', 'Coakers Walk', 'Pillar Rocks', 'Bryant Park', 'Silver Cascade Falls', 'Pine Forest'] },
-        'Thanjavur': { state: 'Tamil Nadu', activities: ['Brihadeeswarar Temple', 'Thanjavur Palace', 'Saraswathi Mahal Library', 'Art Gallery', 'Schwartz Church'] },
-        'Rameswaram': { state: 'Tamil Nadu', activities: ['Ramanathaswamy Temple', 'Pamban Bridge', 'Dhanushkodi', 'Agnitheertham', 'Five-faced Hanuman Temple'] },
-        'Kanyakumari': { state: 'Tamil Nadu', activities: ['Vivekananda Rock Memorial', 'Thiruvalluvar Statue', 'Sunrise/Sunset Point', 'Padmanabhapuram Palace', 'Suchindram Temple'] },
+        // ==================== TAMIL NADU (15 Cities) ====================
+        'Chennai': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=400', activities: ['Marina Beach Walk', 'Kapaleeshwarar Temple', 'Fort St. George', 'San Thome Cathedral', 'Government Museum', 'Valluvar Kottam', 'T Nagar Shopping', 'DakshinaChitra Heritage', 'Elliot Beach', 'Birla Planetarium'] },
+        'Madurai': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1590766940554-634931ab6293?w=400', activities: ['Meenakshi Amman Temple', 'Thirumalai Nayakkar Palace', 'Gandhi Memorial Museum', 'Banana Market Visit', 'Jigarthanda Tasting', 'Alagar Kovil', 'Thirupparankundram Temple', 'Vandiyur Mariamman Teppakulam', 'Koodal Azhagar Temple', 'Pudhu Mandapam'] },
+        'Coimbatore': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1593181629936-11c609b8db9b?w=400', activities: ['Isha Yoga Center', 'Dhyanalinga Meditation', 'Marudamalai Temple', 'VOC Park', 'Siruvani Waterfalls', 'Vellingiri Hills Trek', 'Perur Pateeswarar Temple', 'Gass Forest Museum', 'Brookefields Mall', 'Annapoorna Restaurant Experience'] },
+        'Ooty': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400', activities: ['Botanical Gardens', 'Ooty Lake Boating', 'Nilgiri Mountain Railway', 'Doddabetta Peak', 'Tea Factory Visit', 'Rose Garden', 'Pykara Falls', 'Avalanche Lake', 'Emerald Lake', 'Tribal Toda Village'] },
+        'Kodaikanal': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=400', activities: ['Kodaikanal Lake Boating', 'Coakers Walk', 'Pillar Rocks', 'Bryant Park', 'Silver Cascade Falls', 'Pine Forest Walk', 'Green Valley View', 'Dolphins Nose Viewpoint', 'Guna Cave', 'Berijam Lake Safari'] },
+        'Thanjavur': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1621427639016-5e98ea93ca2f?w=400', activities: ['Brihadeeswarar Temple', 'Thanjavur Maratha Palace', 'Saraswathi Mahal Library', 'Royal Museum', 'Schwartz Church', 'Sangeetha Mahal', 'Art Gallery Visit', 'Tanjore Painting Workshop', 'Sivaganga Park', 'Alangudi Guru Temple'] },
+        'Rameswaram': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1621427639016-5e98ea93ca2f?w=400', activities: ['Ramanathaswamy Temple', 'Pamban Bridge Views', 'Dhanushkodi Ghost Town', 'Agni Theertham', 'Five-faced Hanuman Temple', 'APJ Abdul Kalam Memorial', 'Gandhamadhana Parvatham', 'Ariyaman Beach', 'Villoondi Theertham', 'Lakshmana Theertham'] },
+        'Kanyakumari': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1590766940554-f14a61e8b0a4?w=400', activities: ['Vivekananda Rock Memorial', 'Thiruvalluvar Statue', 'Sunrise and Sunset Point', 'Padmanabhapuram Palace', 'Suchindram Temple', 'Kanyakumari Beach', 'Gandhi Memorial Mandapam', 'Wax Museum', 'Bhagavathy Amman Temple', 'Thirparappu Falls'] },
+        'Tiruchirappalli': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=400', activities: ['Rock Fort Temple', 'Sri Ranganathaswamy Temple', 'Jambukeswarar Temple', 'St. Josephs Church', 'Kallanai Dam', 'Government Museum', 'Mukkombu Picnic', 'Amma Mandapam', 'Ucchi Pillayar Temple', 'Lourdes Church'] },
+        'Mahabalipuram': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=400', activities: ['Shore Temple', 'Pancha Rathas', 'Arjunas Penance', 'Krishna Butter Ball', 'Mahabalipuram Beach', 'Tiger Cave', 'Crocodile Bank', 'Sculpture Workshop', 'Light and Sound Show', 'Mahishasuramardini Cave'] },
+        'Pondicherry': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1580292923498-e3c52ada76a4?w=400', activities: ['Promenade Beach Walk', 'Auroville Matrimandir', 'French Colony Heritage Walk', 'Sri Aurobindo Ashram', 'Paradise Beach', 'Serenity Beach', 'Basilica of Sacred Heart', 'Pondicherry Museum', 'Botanical Garden', 'Arikamedu Archaeological Site'] },
+        'Tirunelveli': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1590766940554-634931ab6293?w=400', activities: ['Nellaiappar Temple', 'Krishnapuram Palace', 'Courtallam Falls', 'Manimuthar Dam', 'Papanasam Falls', 'Agasthiyar Falls', 'Tiruchendur Temple', 'Kalakkad Tiger Reserve', 'Banana Chips Shopping', 'Halwa Tasting'] },
+        'Salem': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400', activities: ['Yercaud Hill Station', 'Kottai Mariamman Temple', 'Sugavaneswarar Temple', 'Salem Steel Plant Tour', 'Kiliyur Falls', 'Ladies Seat Viewpoint', 'Anna Park', 'Pagoda Point', 'Mettur Dam', 'Shevaroy Temple'] },
+        'Vellore': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1600100397608-e4fbcbff3e5a?w=400', activities: ['Vellore Fort', 'Golden Temple Sripuram', 'Jalakandeswarar Temple', 'Government Museum', 'Amirthi Zoological Park', 'Science Park', 'Yelagiri Hills Day Trip', 'CMC Hospital Heritage', 'VIT Campus Visit', 'Ratnagiri Murugan Temple'] },
+        'Kanchipuram': { state: 'Tamil Nadu', image: 'https://images.unsplash.com/photo-1590766940554-634931ab6293?w=400', activities: ['Kailasanathar Temple', 'Ekambareswarar Temple', 'Kamakshi Amman Temple', 'Varadharaja Perumal Temple', 'Silk Saree Shopping', 'Kanchi Kudil Heritage', 'Vaikunta Perumal Temple', 'Kailasanathar Sculptures', 'Vedanthangal Bird Sanctuary', 'Silk Weaving Demonstration'] },
 
-        // Kerala
-        'Kochi': { state: 'Kerala', activities: ['Fort Kochi', 'Chinese Fishing Nets', 'Mattancherry Palace', 'Jewish Synagogue', 'Kerala Kathakali Show', 'Marine Drive', 'Lulu Mall'] },
-        'Alleppey': { state: 'Kerala', activities: ['Houseboat Stay', 'Backwater Cruise', 'Alleppey Beach', 'Ambalapuzha Temple', 'Coir Factory Visit', 'Kayaking'] },
-        'Munnar': { state: 'Kerala', activities: ['Tea Gardens Walk', 'Eravikulam National Park', 'Mattupetty Dam', 'Echo Point', 'Tea Museum', 'Top Station'] },
-        'Thekkady': { state: 'Kerala', activities: ['Periyar Wildlife Sanctuary', 'Boat Ride', 'Spice Plantation Tour', 'Elephant Ride', 'Bamboo Rafting'] },
-        'Wayanad': { state: 'Kerala', activities: ['Edakkal Caves', 'Banasura Dam', 'Chembra Peak Trek', 'Soochipara Falls', 'Thirunelli Temple'] },
-        'Thiruvananthapuram': { state: 'Kerala', activities: ['Padmanabhaswamy Temple', 'Kovalam Beach', 'Napier Museum', 'Veli Tourist Village'] },
+        // ==================== KERALA (15 Cities) ====================
+        'Kochi': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1590050751537-eb45b8c0c9f4?w=400', activities: ['Fort Kochi Heritage Walk', 'Chinese Fishing Nets', 'Mattancherry Palace', 'Jewish Synagogue', 'Kerala Kathakali Show', 'Marine Drive Promenade', 'Lulu Mall Shopping', 'St. Francis Church', 'Jew Town Antique Shopping', 'Kerala Cooking Class'] },
+        'Alleppey': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=400', activities: ['Houseboat Overnight Stay', 'Backwater Cruise', 'Alleppey Beach', 'Ambalapuzha Temple', 'Coir Village Visit', 'Kayaking Backwaters', 'Pathiramanal Island', 'Marari Beach', 'Krishnapuram Palace', 'Nehru Trophy Snake Boat'] },
+        'Munnar': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1549880338-65ddcdfd017b?w=400', activities: ['Tea Gardens Walk', 'Eravikulam National Park', 'Mattupetty Dam', 'Echo Point', 'Tea Museum Visit', 'Top Station Viewpoint', 'Anamudi Peak View', 'Attukal Waterfalls', 'Kundala Lake', 'Rose Garden Munnar'] },
+        'Thekkady': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400', activities: ['Periyar Wildlife Sanctuary', 'Periyar Lake Boat Safari', 'Spice Plantation Tour', 'Elephant Junction', 'Bamboo Rafting', 'Jungle Night Patrol', 'Tribal Heritage Museum', 'Kadathanadan Kalari Center', 'Mangala Devi Temple', 'Chellarkovil Viewpoint'] },
+        'Wayanad': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400', activities: ['Edakkal Caves', 'Banasura Sagar Dam', 'Chembra Peak Trek', 'Soochipara Waterfalls', 'Thirunelli Temple', 'Wayanad Wildlife Sanctuary', 'Pookode Lake', 'Kuruva Island', 'Neelimala Viewpoint', 'Coffee Plantation Tour'] },
+        'Thiruvananthapuram': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1590050751537-eb45b8c0c9f4?w=400', activities: ['Padmanabhaswamy Temple', 'Kovalam Beach', 'Napier Museum', 'Veli Tourist Village', 'Poovar Island', 'Kuthiramalika Palace', 'Science and Technology Museum', 'Priyadarshini Planetarium', 'Neyyar Dam', 'Agasthyakoodam Trek'] },
+        'Kovalam': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1590050751537-eb45b8c0c9f4?w=400', activities: ['Lighthouse Beach', 'Hawa Beach', 'Samudra Beach', 'Ayurvedic Massage Spa', 'Vizhinjam Rock Cut Cave', 'Vizhinjam Fishing Village', 'Surfing Lessons', 'Yoga Retreat', 'Parasailing Adventure', 'Lighthouse Climb'] },
+        'Kumarakom': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=400', activities: ['Kumarakom Bird Sanctuary', 'Vembanad Lake Cruise', 'Houseboat Stay', 'Ayurvedic Resort', 'Bay Island Driftwood Museum', 'Aruvikkuzhi Waterfall', 'Kumarakom Beach', 'Thazhathangadi Mosque', 'Fishing Experience', 'Sunset Village Walk'] },
+        'Varkala': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1590050751537-eb45b8c0c9f4?w=400', activities: ['Varkala Beach Cliff Walk', 'Papanasam Beach', 'Janardhanaswamy Temple', 'Sivagiri Mutt', 'Kappil Beach', 'Edava Beach', 'Varkala Tunnel', 'Ayurveda Treatment', 'Cliff Top Cafes', 'Yoga on the Beach'] },
+        'Thrissur': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1590050751537-eb45b8c0c9f4?w=400', activities: ['Vadakkunnathan Temple', 'Thrissur Pooram Festival', 'Athirappilly Falls', 'Vazhachal Falls', 'Shakthan Thampuran Palace', 'Kerala Kalamandalam', 'Peechi Dam', 'Kerala Folklore Museum', 'Guruvayur Temple', 'Chettuva Backwaters'] },
+        'Kozhikode': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1590050751537-eb45b8c0c9f4?w=400', activities: ['Kozhikode Beach', 'Mananchira Square', 'Thusharagiri Waterfalls', 'Kappad Beach', 'SM Street Shopping', 'Mishkals Mosque', 'Pazhassi Raja Museum', 'Sweet Meat Street', 'Beypore Beach', 'Kadalundi Bird Sanctuary'] },
+        'Kannur': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1590050751537-eb45b8c0c9f4?w=400', activities: ['St Angelos Fort', 'Payyambalam Beach', 'Muzhappilangad Drive-in Beach', 'Theyyam Ritual Performance', 'Kannur Lighthouse', 'Arakkal Museum', 'Dharmadam Island', 'Parassinikadavu Snake Park', 'Handloom Weaving Centre', 'Meenkunnu Beach'] },
+        'Palakkad': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400', activities: ['Palakkad Fort', 'Silent Valley National Park', 'Malampuzha Dam', 'Fantasy Park', 'Rock Garden', 'Parambikulam Tiger Reserve', 'Nelliyampathy Hills', 'Dhoni Waterfalls', 'Kalpathy Heritage Village', 'Jain Temple Jainimedu'] },
+        'Athirappilly': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400', activities: ['Athirappilly Waterfalls', 'Vazhachal Waterfalls', 'Charpa Falls', 'Sholayar Dam', 'Anakkayam Forest', 'Thumboormuzhi Dam', 'Peringalkuthu Dam', 'Rainforest Trek', 'Bamboo Rafting', 'Bird Watching Tour'] },
+        'Bekal': { state: 'Kerala', image: 'https://images.unsplash.com/photo-1590050751537-eb45b8c0c9f4?w=400', activities: ['Bekal Fort', 'Bekal Beach', 'Kappil Beach', 'Nityanandashram Cave', 'Chandragiri Fort', 'Ananthapura Lake Temple', 'Bekal Hole Aqua Park', 'Backwater Cruise', 'Valiyaparamba Backwaters', 'Malik Dinar Mosque'] },
 
+        // ==================== OTHER STATES ====================
         // Goa
-        'Goa': { state: 'Goa', activities: ['Baga Beach', 'Calangute Beach', 'Aguada Fort', 'Basilica of Bom Jesus', 'Dudhsagar Falls', 'Saturday Night Market', 'Casino Night', 'Water Sports'] },
-        'Panaji': { state: 'Goa', activities: ['Fontainhas Latin Quarter', 'Church of Our Lady', 'Miramar Beach', 'Casino Cruise', 'Dona Paula'] },
+        'Goa': { state: 'Goa', image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=400', activities: ['Baga Beach', 'Calangute Beach', 'Aguada Fort', 'Basilica of Bom Jesus', 'Dudhsagar Falls', 'Saturday Night Market', 'Casino Night', 'Water Sports', 'Old Goa Churches', 'Spice Plantation Tour'] },
+        'Panaji': { state: 'Goa', image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=400', activities: ['Fontainhas Latin Quarter', 'Church of Our Lady', 'Miramar Beach', 'Casino Cruise', 'Dona Paula', 'Goa State Museum', 'Reis Magos Fort', 'Mandovi River Cruise', 'Chapel of St Sebastian', 'Municipal Garden'] },
 
         // Karnataka
-        'Bangalore': { state: 'Karnataka', activities: ['Lalbagh Botanical Garden', 'Cubbon Park', 'Bangalore Palace', 'UB City Mall', 'Nandi Hills Day Trip', 'Brigade Road Shopping'] },
-        'Mysore': { state: 'Karnataka', activities: ['Mysore Palace', 'Chamundi Hills', 'Brindavan Gardens', 'St. Philomenas Church', 'Mysore Zoo', 'Devaraja Market'] },
-        'Hampi': { state: 'Karnataka', activities: ['Virupaksha Temple', 'Vittala Temple', 'Elephant Stables', 'Hampi Bazaar', 'Coracle Ride', 'Matanga Hill Sunrise'] },
+        'Bangalore': { state: 'Karnataka', image: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=400', activities: ['Lalbagh Botanical Garden', 'Cubbon Park', 'Bangalore Palace', 'UB City Mall', 'Nandi Hills Day Trip', 'Brigade Road Shopping', 'Tipu Sultans Palace', 'ISKCON Temple', 'Innovative Film City', 'Bannerghatta Safari'] },
+        'Mysore': { state: 'Karnataka', image: 'https://images.unsplash.com/photo-1600100397608-e4fbcbff3e5a?w=400', activities: ['Mysore Palace', 'Chamundi Hills', 'Brindavan Gardens', 'St. Philomenas Church', 'Mysore Zoo', 'Devaraja Market', 'Jaganmohan Palace', 'Karanji Lake', 'GRS Fantasy Park', 'Silk Factory Tour'] },
+        'Hampi': { state: 'Karnataka', image: 'https://images.unsplash.com/photo-1600100397608-e4fbcbff3e5a?w=400', activities: ['Virupaksha Temple', 'Vittala Temple', 'Elephant Stables', 'Hampi Bazaar', 'Coracle Ride', 'Matanga Hill Sunrise', 'Lotus Mahal', 'Queens Bath', 'Hemakuta Hill', 'Underground Shiva Temple'] },
 
         // Maharashtra
-        'Mumbai': { state: 'Maharashtra', activities: ['Gateway of India', 'Marine Drive', 'Elephanta Caves', 'Colaba Causeway', 'Siddhivinayak Temple', 'Juhu Beach', 'Film City Tour'] },
-        'Pune': { state: 'Maharashtra', activities: ['Shaniwar Wada', 'Aga Khan Palace', 'Sinhagad Fort', 'Osho Ashram', 'Dagdusheth Halwai Ganpati'] },
+        'Mumbai': { state: 'Maharashtra', image: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=400', activities: ['Gateway of India', 'Marine Drive', 'Elephanta Caves', 'Colaba Causeway', 'Siddhivinayak Temple', 'Juhu Beach', 'Film City Tour', 'Crawford Market', 'Haji Ali Dargah', 'Dharavi Tour'] },
+        'Pune': { state: 'Maharashtra', image: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=400', activities: ['Shaniwar Wada', 'Aga Khan Palace', 'Sinhagad Fort', 'Osho Ashram', 'Dagdusheth Halwai Ganpati', 'Raja Dinkar Kelkar Museum', 'Pataleshwar Cave Temple', 'Lavasa City', 'Lonavala Day Trip', 'Mahabaleshwar Trip'] },
 
         // Others
-        'Agra': { state: 'Uttar Pradesh', activities: ['Taj Mahal', 'Agra Fort', 'Fatehpur Sikri', 'Mehtab Bagh', 'Itimad-ud-Daulah'] },
-        'Varanasi': { state: 'Uttar Pradesh', activities: ['Ganga Aarti', 'Boat Ride on Ganges', 'Kashi Vishwanath Temple', 'Sarnath', 'Dashashwamedh Ghat'] },
-        'Delhi': { state: 'Delhi', activities: ['Red Fort', 'Qutub Minar', 'India Gate', 'Lotus Temple', 'Humayuns Tomb', 'Chandni Chowk', 'Akshardham Temple'] },
-        'Shimla': { state: 'Himachal Pradesh', activities: ['Mall Road', 'Ridge', 'Jakhoo Temple', 'Christ Church', 'Toy Train Ride', 'Kufri'] },
-        'Manali': { state: 'Himachal Pradesh', activities: ['Rohtang Pass', 'Solang Valley', 'Hadimba Temple', 'Mall Road', 'River Rafting', 'Old Manali Cafes'] },
-        'Rishikesh': { state: 'Uttarakhand', activities: ['Laxman Jhula', 'River Rafting', 'Ganga Aarti at Parmarth', 'Beatles Ashram', 'Bungee Jumping', 'Yoga Session'] },
-        'Darjeeling': { state: 'West Bengal', activities: ['Tiger Hill Sunrise', 'Toy Train', 'Tea Garden Visit', 'Peace Pagoda', 'Batasia Loop', 'Happy Valley Tea Estate'] }
+        'Agra': { state: 'Uttar Pradesh', image: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?w=400', activities: ['Taj Mahal', 'Agra Fort', 'Fatehpur Sikri', 'Mehtab Bagh', 'Itimad-ud-Daulah', 'Kinari Bazaar', 'Akbars Tomb', 'Jama Masjid Agra', 'Taj Museum', 'Marble Handicraft'] },
+        'Varanasi': { state: 'Uttar Pradesh', image: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=400', activities: ['Ganga Aarti', 'Boat Ride on Ganges', 'Kashi Vishwanath Temple', 'Sarnath', 'Dashashwamedh Ghat', 'Assi Ghat', 'Manikarnika Ghat', 'BHU Campus', 'Ramnagar Fort', 'Silk Weaving Tour'] },
+        'Delhi': { state: 'Delhi', image: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=400', activities: ['Red Fort', 'Qutub Minar', 'India Gate', 'Lotus Temple', 'Humayuns Tomb', 'Chandni Chowk', 'Akshardham Temple', 'Jama Masjid', 'Gurudwara Bangla Sahib', 'Hauz Khas Village'] },
+        'Shimla': { state: 'Himachal Pradesh', image: 'https://images.unsplash.com/photo-1597074866923-dc0589150358?w=400', activities: ['Mall Road', 'Ridge', 'Jakhoo Temple', 'Christ Church', 'Toy Train Ride', 'Kufri', 'Green Valley', 'Viceregal Lodge', 'Annandale', 'Chadwick Falls'] },
+        'Manali': { state: 'Himachal Pradesh', image: 'https://images.unsplash.com/photo-1593181629936-11c609b8db9b?w=400', activities: ['Rohtang Pass', 'Solang Valley', 'Hadimba Temple', 'Mall Road Manali', 'River Rafting Beas', 'Old Manali Cafes', 'Vashisht Hot Springs', 'Jogini Waterfall', 'Manu Temple', 'Tibetan Monastery'] },
+        'Rishikesh': { state: 'Uttarakhand', image: 'https://images.unsplash.com/photo-1586439738618-1142c0cec81f?w=400', activities: ['Laxman Jhula', 'River Rafting', 'Ganga Aarti at Parmarth', 'Beatles Ashram', 'Bungee Jumping', 'Yoga Session', 'Ram Jhula', 'Neer Garh Waterfall', 'Triveni Ghat', 'Camping Riverside'] },
+        'Darjeeling': { state: 'West Bengal', image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400', activities: ['Tiger Hill Sunrise', 'Toy Train Ride', 'Tea Garden Visit', 'Peace Pagoda', 'Batasia Loop', 'Happy Valley Tea Estate', 'Himalayan Mountaineering Institute', 'Padmaja Naidu Zoo', 'Rock Garden', 'Ghoom Monastery'] }
     };
 
     // Current itinerary data
@@ -356,11 +383,30 @@
     if (!itinerary.stops) itinerary.stops = [];
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', async function () {
+        // Try to fetch cities from API, fall back to hardcoded data
+        await loadCitiesFromAPI();
         renderItinerary();
         setupCitySearch();
         setupActivitySearch();
     });
+
+    // Load cities from API
+    async function loadCitiesFromAPI() {
+        try {
+            const response = await fetch('/api/cities/frontend-format');
+            if (response.ok) {
+                const apiCities = await response.json();
+                // If API has data, merge with existing (API takes priority)
+                if (Object.keys(apiCities).length > 0) {
+                    Object.assign(indianCities, apiCities);
+                    console.log('Cities loaded from API:', Object.keys(apiCities).length);
+                }
+            }
+        } catch (error) {
+            console.log('Using hardcoded city data (API unavailable):', error);
+        }
+    }
 
     // City Search Setup
     function setupCitySearch() {
@@ -465,6 +511,7 @@
 
         itinerary.stops.push(stop);
         renderItinerary();
+        autoSaveItinerary();
         this.reset();
         showToast(`${cityName} added to your itinerary!`, 'success');
     });
@@ -472,17 +519,20 @@
     // Render Itinerary
     function renderItinerary() {
         const container = document.getElementById('stopsContainer');
-        const emptyState = document.getElementById('emptyState');
 
         if (itinerary.stops.length === 0) {
-            emptyState.style.display = 'block';
-            container.innerHTML = '';
-            container.appendChild(emptyState);
+            container.innerHTML = `
+                <div class="text-center py-12 card-payanam" id="emptyState" data-aos="fade-up">
+                    <div class="w-20 h-20 gradient-cream rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-map-marked-alt text-primary text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-accent mb-2">Start Building Your Itinerary</h3>
+                    <p class="text-gray-500 mb-4">Add your first city to begin planning your adventure!</p>
+                </div>
+            `;
             updateStats();
             return;
         }
-
-        emptyState.style.display = 'none';
 
         container.innerHTML = itinerary.stops.map((stop, stopIndex) => `
         <div class="card-payanam mb-6 overflow-hidden" data-aos="fade-up">
@@ -536,13 +586,13 @@
                             </button>
                         </div>
                         
-                        <div class="ml-10 space-y-2">
+                        <div id="activities-${stopIndex}-${dayIndex}" class="ml-10 space-y-2">
                             ${day.activities.length === 0 ? `
-                                <div class="p-4 bg-gray-50 rounded-xl text-center text-gray-400 text-sm">
+                                <div class="p-4 bg-gray-50 rounded-xl text-center text-gray-400 text-sm activity-empty">
                                     No activities planned yet. Click "Add Activity" to start!
                                 </div>
                             ` : day.activities.map((activity, actIndex) => `
-                                <div class="p-3 bg-cream rounded-xl flex items-center justify-between group">
+                                <div class="activity-item p-3 bg-cream rounded-xl flex items-center justify-between group" data-index="${actIndex}">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 ${getCategoryColor(activity.category)} rounded-lg flex items-center justify-center text-white text-sm">
                                             ${getCategoryIcon(activity.category)}
@@ -556,11 +606,19 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="flex items-center gap-3">
-                                        <span class="font-bold text-secondary">₹${activity.estimated_cost}</span>
-                                        <button onclick="removeActivity(${stopIndex}, ${dayIndex}, ${actIndex})" class="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition">
-                                            <i class="fas fa-times"></i>
-                                        </button>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-bold text-secondary mr-2">₹${activity.estimated_cost}</span>
+                                        <div class="flex items-center gap-1">
+                                            <button type="button" onclick="event.stopPropagation(); moveActivity(${stopIndex}, ${dayIndex}, ${actIndex}, -1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-blue-100 hover:bg-blue-500 hover:text-white text-blue-600 transition ${actIndex === 0 ? 'opacity-30 cursor-not-allowed' : ''}" ${actIndex === 0 ? 'disabled' : ''} title="Move up">
+                                                <i class="fas fa-arrow-up"></i>
+                                            </button>
+                                            <button type="button" onclick="event.stopPropagation(); moveActivity(${stopIndex}, ${dayIndex}, ${actIndex}, 1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-blue-100 hover:bg-blue-500 hover:text-white text-blue-600 transition ${actIndex === day.activities.length - 1 ? 'opacity-30 cursor-not-allowed' : ''}" ${actIndex === day.activities.length - 1 ? 'disabled' : ''} title="Move down">
+                                                <i class="fas fa-arrow-down"></i>
+                                            </button>
+                                            <button type="button" onclick="event.stopPropagation(); removeActivity(${stopIndex}, ${dayIndex}, ${actIndex})" class="w-7 h-7 flex items-center justify-center rounded-lg bg-red-100 hover:bg-red-500 hover:text-white text-red-600 transition" title="Remove">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             `).join('')}
@@ -703,6 +761,7 @@
 
         itinerary.stops[stopIndex].days[dayIndex].activities.push(activity);
         renderItinerary();
+        autoSaveItinerary();
 
         if (activityModalInstance) {
             activityModalInstance.hide();
@@ -712,16 +771,121 @@
 
     function removeActivity(stopIndex, dayIndex, actIndex) {
         if (confirm('Remove this activity?')) {
-            itinerary.stops[stopIndex].days[dayIndex].activities.splice(actIndex, 1);
-            renderItinerary();
-            showToast('Activity removed', 'success');
+            // Animate removal
+            const container = document.getElementById(`activities-${stopIndex}-${dayIndex}`);
+            const items = container.querySelectorAll('.activity-item');
+            const itemToRemove = items[actIndex];
+            
+            if (itemToRemove) {
+                itemToRemove.style.transform = 'translateX(100%)';
+                itemToRemove.style.opacity = '0';
+                itemToRemove.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+                
+                setTimeout(() => {
+                    itinerary.stops[stopIndex].days[dayIndex].activities.splice(actIndex, 1);
+                    renderDayActivities(stopIndex, dayIndex);
+                    autoSaveItinerary();
+                    showToast('Activity removed', 'success');
+                }, 300);
+            } else {
+                itinerary.stops[stopIndex].days[dayIndex].activities.splice(actIndex, 1);
+                renderDayActivities(stopIndex, dayIndex);
+                autoSaveItinerary();
+                showToast('Activity removed', 'success');
+            }
         }
+    }
+
+    function moveActivity(stopIndex, dayIndex, actIndex, direction) {
+        const activities = itinerary.stops[stopIndex].days[dayIndex].activities;
+        const newIndex = actIndex + direction;
+        
+        if (newIndex < 0 || newIndex >= activities.length) return;
+        
+        // Get the activity elements for animation
+        const container = document.getElementById(`activities-${stopIndex}-${dayIndex}`);
+        const items = container.querySelectorAll('.activity-item');
+        const currentItem = items[actIndex];
+        const targetItem = items[newIndex];
+        
+        if (currentItem && targetItem) {
+            // Add animation classes
+            currentItem.style.transform = direction === -1 ? 'translateY(-100%)' : 'translateY(100%)';
+            targetItem.style.transform = direction === -1 ? 'translateY(100%)' : 'translateY(-100%)';
+            currentItem.style.transition = 'transform 0.2s ease-out';
+            targetItem.style.transition = 'transform 0.2s ease-out';
+            
+            setTimeout(() => {
+                // Swap in data
+                const temp = activities[actIndex];
+                activities[actIndex] = activities[newIndex];
+                activities[newIndex] = temp;
+                
+                // Re-render only this day's activities
+                renderDayActivities(stopIndex, dayIndex);
+                autoSaveItinerary();
+            }, 200);
+        } else {
+            // Fallback if elements not found
+            const temp = activities[actIndex];
+            activities[actIndex] = activities[newIndex];
+            activities[newIndex] = temp;
+            renderDayActivities(stopIndex, dayIndex);
+            autoSaveItinerary();
+        }
+    }
+
+    // Render only a specific day's activities (for smooth updates)
+    function renderDayActivities(stopIndex, dayIndex) {
+        const container = document.getElementById(`activities-${stopIndex}-${dayIndex}`);
+        if (!container) return;
+        
+        const day = itinerary.stops[stopIndex].days[dayIndex];
+        
+        container.innerHTML = day.activities.length === 0 ? `
+            <div class="p-4 bg-gray-50 rounded-xl text-center text-gray-400 text-sm activity-empty">
+                No activities planned yet. Click "Add Activity" to start!
+            </div>
+        ` : day.activities.map((activity, actIndex) => `
+            <div class="activity-item p-3 bg-cream rounded-xl flex items-center justify-between group" data-index="${actIndex}">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 ${getCategoryColor(activity.category)} rounded-lg flex items-center justify-center text-white text-sm">
+                        ${getCategoryIcon(activity.category)}
+                    </div>
+                    <div>
+                        <div class="font-medium text-accent">${activity.activity_name}</div>
+                        <div class="text-xs text-gray-500">
+                            ${activity.time ? activity.time + ' • ' : ''}
+                            <span class="capitalize">${activity.category}</span>
+                            ${activity.notes ? ' • ' + activity.notes : ''}
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-secondary mr-2">₹${activity.estimated_cost}</span>
+                    <div class="flex items-center gap-1">
+                        <button type="button" onclick="event.stopPropagation(); moveActivity(${stopIndex}, ${dayIndex}, ${actIndex}, -1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-blue-100 hover:bg-blue-500 hover:text-white text-blue-600 transition ${actIndex === 0 ? 'opacity-30 cursor-not-allowed' : ''}" ${actIndex === 0 ? 'disabled' : ''} title="Move up">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button type="button" onclick="event.stopPropagation(); moveActivity(${stopIndex}, ${dayIndex}, ${actIndex}, 1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-blue-100 hover:bg-blue-500 hover:text-white text-blue-600 transition ${actIndex === day.activities.length - 1 ? 'opacity-30 cursor-not-allowed' : ''}" ${actIndex === day.activities.length - 1 ? 'disabled' : ''} title="Move down">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                        <button type="button" onclick="event.stopPropagation(); removeActivity(${stopIndex}, ${dayIndex}, ${actIndex})" class="w-7 h-7 flex items-center justify-center rounded-lg bg-red-100 hover:bg-red-500 hover:text-white text-red-600 transition" title="Remove">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        
+        updateStats();
     }
 
     function removeStop(stopIndex) {
         if (confirm('Remove this city from your itinerary?')) {
             itinerary.stops.splice(stopIndex, 1);
             renderItinerary();
+            autoSaveItinerary();
             showToast('City removed from itinerary', 'success');
         }
     }
@@ -734,6 +898,7 @@
         itinerary.stops[index] = itinerary.stops[newIndex];
         itinerary.stops[newIndex] = temp;
         renderItinerary();
+        autoSaveItinerary();
     }
 
     // Update Stats
@@ -755,7 +920,55 @@
         document.getElementById('activitiesCount').textContent = totalActivities;
     }
 
-    // Save Itinerary
+    // Auto-save Itinerary (silent save)
+    function autoSaveItinerary() {
+        let totalBudget = 0;
+        itinerary.stops.forEach(stop => {
+            stop.days.forEach(day => {
+                day.activities.forEach(activity => {
+                    totalBudget += parseFloat(activity.estimated_cost) || 0;
+                });
+            });
+        });
+
+        fetch('/api/trip/{{ trip.trip_id }}/itinerary', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(itinerary)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update budget silently
+                    fetch('/api/trip/{{ trip.trip_id }}/budget', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ total_budget: totalBudget })
+                    });
+                    // Show subtle save indicator
+                    showSaveIndicator();
+                }
+            })
+            .catch(error => {
+                console.error('Auto-save failed:', error);
+            });
+    }
+
+    // Show subtle save indicator
+    function showSaveIndicator() {
+        const indicator = document.createElement('div');
+        indicator.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 shadow-lg z-50 animate-fade-in';
+        indicator.innerHTML = '<i class="fas fa-check-circle"></i> Saved';
+        document.body.appendChild(indicator);
+        
+        setTimeout(() => {
+            indicator.style.opacity = '0';
+            indicator.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => indicator.remove(), 300);
+        }, 1500);
+    }
+
+    // Manual Save Itinerary (with toast)
     function saveItinerary() {
         let totalBudget = 0;
         itinerary.stops.forEach(stop => {
